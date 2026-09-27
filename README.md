@@ -55,6 +55,14 @@ Security Slam 2026 guidance used Gemara 0.19.x. The `inspector` skill explains h
 claude plugins marketplace update security-slam
 ```
 
+## Releasing
+
+Claude Code caches plugins by version, so users only receive changes that come with a version bump.
+
+- Any PR that changes `security-slam-skills/` or `.claude-plugin/marketplace.json` must bump `version` in `security-slam-skills/.claude-plugin/plugin.json` and `metadata.version` in `.claude-plugin/marketplace.json` to the same value. The `version-check` workflow enforces this.
+- The auto-labeler adds the `release` label to those PRs, and merging one publishes a release automatically.
+- CI, docs, and other repo changes never trigger a release.
+
 ## Uninstall
 
 ```bash
