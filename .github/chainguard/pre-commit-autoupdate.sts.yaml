@@ -1,0 +1,10 @@
+issuer: https://token.actions.githubusercontent.com
+# Immutable OIDC subject format: security-slam = 147540932, skills = 1389998612
+subject: repo:security-slam@147540932/skills@1389998612:ref:refs/heads/main
+claim_pattern:
+  job_workflow_ref: security-slam/skills/.github/workflows/pre-commit-autoupdate.yaml@refs/heads/main
+
+permissions:
+  contents: write
+  pull_requests: write
+  workflows: write

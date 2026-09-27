@@ -1,0 +1,55 @@
+# Gemara v1 threat catalog example, adapted from the Security Slam 2026
+# Threat Assessment Guide (which used the pre-v1 single-file format).
+metadata:
+  id: SEC.SLAM.CM.THREATS
+  type: ThreatCatalog
+  gemara-version: "1.5.0"
+  version: "1.0.0"
+  description: Threats to a container management tool
+  author:
+    id: example
+    name: Example
+    type: Human
+  mapping-references:
+    - id: CCC
+      title: Common Cloud Controls Core
+      version: v2025.10
+      url: https://github.com/finos/common-cloud-controls/releases
+    - id: SEC.SLAM.CM.CAPS
+      title: Container Management Tool Capabilities
+      version: "1.0.0"
+
+title: Container Management Tool Threats
+
+groups:
+  - id: tampering
+    title: Tampering
+    description: Modifying data or code without authorization
+
+imports:
+  - reference-id: CCC
+    entries:
+      - reference-id: CCC.Core.TH14
+        remarks: Older Resource Versions are Used
+
+threats:
+  - id: SEC.SLAM.CM.THR01
+    title: Container Image Tampering or Poisoning
+    description: |
+      Attackers may replace a legitimately published image tag with a malicious
+      image by exploiting tag mutability, especially when the tool retrieves
+      images by tag rather than digest. This enables unauthorized access, data
+      exfiltration, and system compromise.
+    group: tampering
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP29
+          - reference-id: CCC.Core.CP18
+      - reference-id: SEC.SLAM.CM.CAPS
+        entries:
+          - reference-id: SEC.SLAM.CM.CAP01
+    actors:
+      - id: external-attacker
+        name: External Attacker
+        type: Human

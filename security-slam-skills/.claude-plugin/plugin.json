@@ -1,0 +1,11 @@
+{
+  "name": "security-slam-skills",
+  "description": "One skill per Security Slam project badge: Cleaner, Chronicler, Inspector, Mechanizer, Defender, and CRA.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Security Slam",
+    "url": "https://securityslam.com"
+  },
+  "homepage": "https://github.com/security-slam/skills",
+  "license": "Apache-2.0"
+}
