@@ -1,0 +1,41 @@
+# Minimum Security Insights v2 file. Replace every value with real project data.
+# Delete any line you cannot back with evidence. Validate with cue before committing.
+header:
+  schema-version: 2.2.0
+  last-updated: 'YYYY-MM-DD'
+  last-reviewed: 'YYYY-MM-DD'
+  url: https://github.com/OWNER/REPO/raw/main/SECURITY-INSIGHTS.yml
+
+project:
+  name: PROJECT_NAME
+  administrators:
+    - name: MAINTAINER_NAME
+      affiliation: MAINTAINER_AFFILIATION
+      email: maintainer@example.com
+      primary: true
+  repositories:
+    - name: REPO
+      url: https://github.com/OWNER/REPO
+      comment: Primary repository for PROJECT_NAME.
+  vulnerability-reporting:
+    reports-accepted: true
+    bug-bounty-available: false
+    policy: https://github.com/OWNER/REPO/blob/main/SECURITY.md
+
+repository:
+  url: https://github.com/OWNER/REPO
+  status: active
+  accepts-change-request: true
+  accepts-automated-change-request: true
+  core-team:
+    - name: MAINTAINER_NAME
+      affiliation: MAINTAINER_AFFILIATION
+      email: maintainer@example.com
+      primary: true
+  license:
+    url: https://github.com/OWNER/REPO/blob/main/LICENSE
+    expression: Apache-2.0
+  security:
+    assessments:
+      self:
+        comment: A self-assessment has not been completed yet.

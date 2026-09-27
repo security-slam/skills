@@ -1,0 +1,48 @@
+# OSPS Baseline evaluation for the Security Slam Mechanizer badge.
+# Replace every RESOLVE_SHA / RESOLVE_TAG pair with the latest release tag and
+# its full commit SHA from the GitHub API before committing. Never use mutable tags.
+name: OSPS Baseline
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Weekly, Mondays 09:00 UTC
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  assess:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write # Only needed when upload-sarif is "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@RESOLVE_SHA # RESOLVE_TAG
+        with:
+          persist-credentials: false
+
+      - name: OSPS Baseline scan
+        uses: revanite-io/osps-baseline-action@RESOLVE_SHA # RESOLVE_TAG
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          token: ${{ secrets.PVTR_GITHUB_TOKEN }}
+          catalog: "osps-baseline-2026-02"
+          upload-sarif: "true"
+          fail-on-error: "true"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@RESOLVE_SHA # RESOLVE_TAG
+        with:
+          name: osps-baseline-results-${{ github.run_number }}
+          path: evaluation_results/
+          retention-days: 30

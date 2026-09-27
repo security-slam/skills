@@ -1,0 +1,18 @@
+{
+  "name": "security-slam",
+  "owner": {
+    "name": "Security Slam",
+    "url": "https://github.com/security-slam"
+  },
+  "metadata": {
+    "description": "Claude Code skills for earning Security Slam project badges.",
+    "version": "0.0.1"
+  },
+  "plugins": [
+    {
+      "name": "security-slam-skills",
+      "source": "./security-slam-skills",
+      "description": "One skill per Security Slam project badge: Cleaner, Chronicler, Inspector, Mechanizer, Defender, and CRA."
+    }
+  ]
+}
