@@ -34,7 +34,7 @@ This table shows where Slam badge work usually lands. It is a practical guide, n
 | Field | Evidence | Related Baseline controls | Badge |
 | --- | --- | --- | --- |
 | `project.vulnerability-reporting.contact`, `.policy` | SECURITY.md, CVD (coordinated vulnerability disclosure) policy | VM-01.01, VM-02.01, VM-03.01 | Cleaner, Chronicler |
-| `project.documentation.quickstart-guide`, `.detailed-guide` | User guides | DO-01.01 | Chronicler |
+| `project.documentation.detailed-guide` | User guides. The OSPS Baseline scanner reads only this field for DO-01.01, so always set it when a user guide exists. `quickstart-guide` is optional and does not satisfy the scanner alone. | DO-01.01 | Cleaner, Chronicler |
 | `repository.documentation.contributing-guide` | CONTRIBUTING.md, including how to report defects | DO-02.01, GV-03.01, GV-03.02 | Chronicler |
 | `repository.documentation.dependency-management-policy` | How dependencies are selected, obtained, tracked | DO-06.01 | Chronicler |
 | `project.documentation.signature-verification` | How to verify release integrity and author identity | DO-03.01, DO-03.02 | Chronicler |

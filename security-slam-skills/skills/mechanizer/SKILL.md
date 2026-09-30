@@ -45,6 +45,13 @@ Get the current picture before touching CI. Follow the [pvtr-github-repo-scanner
 
 Many failures are missing documentation or Security Insights fields. Hand those to the `cleaner` and `chronicler` skills.
 
+Two failures are common on new projects:
+
+| Control | Scanner message | Fix |
+| --- | --- | --- |
+| OSPS-BR-07.01 | Secret scanning and push protection are both disabled | Turn both on in repository settings. They are free for public repositories. This is a settings change, so get approval first. |
+| OSPS-DO-01.01 | User guide was NOT specified in Security Insights data | Set `project.documentation.detailed-guide`. The scanner reads only that field; `quickstart-guide` alone fails. |
+
 ### 3. Fix failures
 
 Work through the table with the user. For each settings change, show the exact `gh api` call or UI steps and wait for approval. Re-scan after each batch.
@@ -62,8 +69,13 @@ Create `.github/workflows/osps-baseline.yml` from [assets/osps-baseline.yml](ass
 
    Repeat for `actions/checkout` and `actions/upload-artifact`.
 
-2. Set `catalog` to the Baseline catalog the scanner release supports. Use the action README's default unless the user needs an older catalog.
-3. Tell the user to create a PAT with `public_repo` scope (or `repo` for private repos) and store it as the `PVTR_GITHUB_TOKEN` secret. The built-in `GITHUB_TOKEN` does not work. Never ask the user to paste the token into the conversation.
+2. Always set `catalog` explicitly to a Baseline catalog the pinned scanner release ships. Never rely on the default: the action's README and its `action.yml` have named different defaults.
+3. Choose the scanner token. The built-in `GITHUB_TOKEN` does not work. Offer these in order:
+   1. **octo-sts**, when the org has the [octo-sts](https://github.com/octo-sts/app) GitHub App installed. The workflow trades its OIDC identity for a short-lived, read-only token. No secret is stored. See [references/octo-sts-token.md](references/octo-sts-token.md).
+   2. **A fine-grained PAT** limited to this repository with read-only access. Store it as the `PVTR_GITHUB_TOKEN` secret.
+   3. **A classic PAT** with `public_repo` (or `repo` for private repos), stored the same way. Use it only as a fallback: `public_repo` also grants write access to every public repository the user can push to.
+
+   Never ask the user to paste a token into the conversation, and never create one yourself.
 
 Correct:
 
@@ -89,7 +101,7 @@ The action assesses Maturity Level 1 only. That is expected and still satisfies 
 ### 5. Publish results
 
 - Keep the workflow on a schedule so results stay fresh, and upload results as an artifact.
-- Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab.
+- Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab. With `fail-on-error: "true"`, the action exits before its SARIF upload, so failed controls reach only the workflow log and the results artifact. Read failures from the artifact's `pvtr/pvtr.sarif` in that case.
 - Add a status badge for the workflow to the README.
 
 ### 6. Record the tooling in Security Insights
@@ -108,6 +120,6 @@ Add a `repository.security.tools` entry for the scanner. The `cleaner` skill's [
 
 - **Scanner flakes on API errors:** re-run once. If it keeps failing, check token scope and rate limits before blaming the repo.
 - **Control fails because the scanner is behind the Baseline version:** note the version gap in the submission and ask a Slam advisor. Do not fake compliance.
-- **Org-level controls (MFA):** the MFA check runs only when the token has `admin:org`. Ask the user whether an org admin will run that scan. Never request broader scopes than needed.
+- **Org-level controls (MFA):** the MFA check runs only when the token has `admin:org`. A repository-scoped octo-sts token or fine-grained PAT does not, so expect AC-01.01 to report "needs review". Ask the user whether an org admin will run that scan. Never request broader scopes than needed.
 - **Multi-repo project:** add the workflow to every repository listed in Security Insights, or run it centrally with a matrix over the repos.
 - **Alternative tooling:** OpenSSF [Minder](https://mindersec.dev/) publishes Baseline Level 1 rules and can auto-remediate some checks. It helps close gaps but does not replace the badge's scoring paths.

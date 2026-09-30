@@ -25,7 +25,7 @@ Controls that start "When the project has made a release" apply only after a fir
 
 | Level | Control | Requirement | Usual home | Security Insights field |
 | --- | --- | --- | --- | --- |
-| 1 | OSPS-DO-01.01 | User guides for all basic functionality | README, docs site | `project.documentation.quickstart-guide`, `detailed-guide` |
+| 1 | OSPS-DO-01.01 | User guides for all basic functionality | README, docs site | `project.documentation.detailed-guide` (required: the Baseline scanner reads only this field), plus `quickstart-guide` if one exists |
 | 1 | OSPS-DO-02.01 | A guide for reporting defects | CONTRIBUTING.md, issue templates | `repository.documentation.contributing-guide` |
 | 2 | OSPS-DO-06.01 | How the project selects, obtains, and tracks dependencies | CONTRIBUTING.md or a dependency policy doc | `repository.documentation.dependency-management-policy` |
 | 2 | OSPS-DO-07.01 | How to build the software, including required libraries, frameworks, SDKs, and dependencies | CONTRIBUTING.md, BUILDING.md | `repository.documentation.contributing-guide` |
