@@ -1,6 +1,6 @@
 ---
 name: inspector
-description: Earn the Security Slam Inspector badge by completing a structured security self-assessment, either a Gemara-compatible threat catalog or an OSPS Self Assessment. Use when the user mentions the Inspector badge, Security Slam, threat modeling, threat assessment, Gemara, threat catalog, capabilities and threats, FINOS Common Cloud Controls, or a security self-assessment. Maps the project's attack surface from the code, drafts the assessment with the maintainer, and validates Gemara YAML with cue.
+description: Earn the Security Slam Inspector badge by completing a structured security self-assessment, either a Gemara-compatible threat catalog or an OSPS Self Assessment. Use when the user mentions the Inspector badge, Security Slam, threat modeling, threat assessment, Gemara, threat catalog, capabilities and threats, FINOS Common Cloud Controls, or a security self-assessment. Maps the project's attack surface from the code, drafts the assessment with the maintainer, and validates Gemara YAML with cue, or hands Gemara authoring to the gemara-ai plugin when it is installed.
 ---
 
 # Inspector Badge
@@ -10,7 +10,7 @@ The Inspector badge requires a structured security self-assessment. Two paths qu
 - **Option 1: Gemara threat assessment.** A machine-readable catalog of capabilities (what the project does) and threats (what could go wrong). Best for projects whose regulated users want machine-readable threat data.
 - **Option 2: OSPS Self Assessment.** A prose assessment following the [OpenSSF security-assessments](https://github.com/ossf/security-assessments) guidance. Broader in scope.
 
-Source: [securityslam.com/library/inspector](https://securityslam.com/library/inspector) and the [Threat Assessment Guide](https://securityslam.com/library/threat-assessment-guide).
+Source: [securityslam.com/library/inspector](https://securityslam.com/library/inspector) and the [Threat Assessment Guide](https://securityslam.com/library/threat-assessment-guide), which targets Gemara v1.5.0.
 
 ## Critical Rules
 
@@ -37,14 +37,22 @@ Present this map to the user before writing any assessment content.
 
 ### 2a. Option 1: Gemara threat catalog
 
-Follow [references/gemara-threat-catalog.md](references/gemara-threat-catalog.md). In short:
+**Use gemara-ai when it is installed.** If the `gemara-artifact-authoring` skill is available in this session, follow its threat assessment wizard to write and validate the catalogs, using the scope and attack surface map from step 1. Its `validate_gemara_artifact` tool checks the current Gemara schema. Then continue with step 3 below.
+
+If it is not installed, continue with the steps below, and always put this line in your report to the user:
+
+> Optional: the Gemara project maintains [gemara-ai](https://github.com/gemaraproj/gemara-ai), a Claude Code plugin with a guided wizard and live schema validation. Install it with `claude plugin install gemara` (it needs podman or docker).
+
+Never require it, and never install it yourself.
+
+Without gemara-ai, follow [references/gemara-threat-catalog.md](references/gemara-threat-catalog.md). In short:
 
 1. Write a capability catalog (`type: CapabilityCatalog`). Import matching capabilities from FINOS CCC (Common Cloud Controls) Core before defining new ones. Give project capabilities IDs like `ORG.PROJ.COMPONENT.CAP01`.
 2. Write a threat catalog (`type: ThreatCatalog`). Import matching CCC threats, then define project threats with IDs like `ORG.PROJ.COMPONENT.THR01`. Link each threat to the capabilities it exploits.
 3. List every catalog you import from or link to under `metadata.mapping-references`.
 4. Validate with cue (below).
 
-Start from the validated examples in [assets/capability-catalog.yaml](assets/capability-catalog.yaml) and [assets/threat-catalog.yaml](assets/threat-catalog.yaml).
+Start from the validated examples in [assets/capability-catalog.yaml](assets/capability-catalog.yaml) and [assets/threat-catalog.yaml](assets/threat-catalog.yaml). For a complete real assessment, read the Security Slam website's own [capability catalog](https://github.com/security-slam/website/blob/main/capability-catalog.yaml) and [threat catalog](https://github.com/security-slam/website/blob/main/threat-catalog.yaml). Link to them; do not copy them, because that repository has no license file.
 
 Correct - specific, tied to a real capability:
 
@@ -78,7 +86,9 @@ cue vet -c -d '#CapabilityCatalog' github.com/gemaraproj/gemara@v1.5.0 capabilit
 cue vet -c -d '#ThreatCatalog' github.com/gemaraproj/gemara@v1.5.0 threat-catalog.yaml
 ```
 
-Always pin the version and set `metadata.gemara-version` to match. The Slam 2026 guide used the pre-v1 format, where capabilities and threats lived in one file under `imported-capabilities` and `imported-threats`. That format fails against v1. If the project already has a pre-v1 catalog, migrate it using [references/gemara-threat-catalog.md](references/gemara-threat-catalog.md).
+Always pin the version and set `metadata.gemara-version` to match.
+
+If the project already has a pre-v1 catalog (one file with `imported-capabilities` and `imported-threats`), it fails against v1. Migrate it with gemara-ai's `migrate_gemara_artifact` tool when available, or by hand with the table in [references/gemara-threat-catalog.md](references/gemara-threat-catalog.md).
 
 ### 2b. Option 2: OSPS Self Assessment
 
@@ -112,7 +122,7 @@ repository:
 ### 4. Submission checklist
 
 - [ ] Assessment reviewed and approved by a maintainer
-- [ ] Gemara YAML passes `cue vet` (Option 1)
+- [ ] Gemara YAML passes `cue vet` or `validate_gemara_artifact` (Option 1)
 - [ ] Assessment merged on the default branch
 - [ ] Security Insights `assessments.self` points to it
 - [ ] Completion notification submitted on the Inspector badge page (Option 2 asks for short feedback on Gemara)

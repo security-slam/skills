@@ -123,6 +123,8 @@ grep -oE 'https://[^ "]+' SECURITY-INSIGHTS.yml | sort -u | while read -r u; do
 
 Report any non-200 URL to the user. Do not mark the badge ready while a URL is broken.
 
+Expect a 404 for `header.url`, and for links to files added in the same change, until the change merges to the default branch. Tell the user to re-check those URLs after merging. Treat any other non-200 URL as broken.
+
 ### 6. Offer CI validation
 
 Offer to add the [Security Insights Action](https://github.com/revanite-io/security-insights-action) so the file stays valid. Its default path is `.github/security-insights.yml`, so set `file:` when the file lives elsewhere. Pin the action to a full commit SHA with a version comment. Resolve the SHA with `gh api repos/revanite-io/security-insights-action/git/ref/tags/<tag>`. Never guess a SHA.
