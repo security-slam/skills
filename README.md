@@ -1,5 +1,7 @@
 # security-slam/skills
 
+[![OSPS Baseline](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml/badge.svg)](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml)
+
 A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace for earning [Security Slam](https://securityslam.com) project badges.
 
 The marketplace is named `security-slam`. It ships one plugin, `security-slam-skills`, with one skill per project badge and a `slam-status` skill that checks all six. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.

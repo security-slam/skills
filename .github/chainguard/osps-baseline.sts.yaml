@@ -1,0 +1,12 @@
+issuer: https://token.actions.githubusercontent.com
+# Immutable OIDC subject format: security-slam = 147540932, skills = 1389998612
+subject: repo:security-slam@147540932/skills@1389998612:ref:refs/heads/main
+claim_pattern:
+  job_workflow_ref: security-slam/skills/.github/workflows/osps-baseline.yaml@refs/heads/main
+
+# Read-only: the OSPS Baseline scanner only inspects repository settings and files
+permissions:
+  actions: read
+  administration: read
+  contents: read
+  security_events: read
