@@ -57,7 +57,7 @@ Silent output means valid. cue checks shape, unique IDs, and that each entry's `
 
 ## Migrating a Pre-v1 Catalog
 
-The Slam 2026 guide targeted Gemara v0.19.x, which used one file:
+Catalogs written for Gemara v0.19.x, including those from the Slam guide before its v1.5.0 update, use one file. If the gemara-ai plugin is installed, its `migrate_gemara_artifact` tool converts them. To migrate by hand:
 
 | Pre-v1 (single file) | v1 |
 | --- | --- |

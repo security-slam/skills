@@ -48,7 +48,7 @@ The individual recognitions (Security Advocate, Security Champion, Advisor) go t
 | Security Insights schema | 2.2.0 |
 | Gemara schema | 1.5.0 |
 
-Security Slam 2026 guidance used Gemara 0.19.x. The `inspector` skill explains how to migrate.
+The `inspector` skill hands Gemara authoring to the [gemara-ai](https://github.com/gemaraproj/gemara-ai) plugin when it is installed, and explains how to migrate catalogs written for Gemara 0.19.x.
 
 ## Update
 
