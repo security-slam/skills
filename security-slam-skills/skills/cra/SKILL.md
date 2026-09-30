@@ -1,6 +1,6 @@
 ---
 name: cra
-description: Earn the Security Slam CRA badge by implementing voluntary EU Cyber Resilience Act (CRA) readiness practices and documenting them with a checklist and disclaimer. Use when the user mentions the CRA badge, Security Slam, Cyber Resilience Act, CRA readiness, EU CRA for open source, vulnerability management policy, end-of-life or support period policy, or the project steward's CRA guidelines. Audits the eight readiness items, fills gaps, and publishes a CRA-READINESS.md with the required no-liability disclaimer.
+description: Earn the Security Slam CRA Readiness badge by implementing voluntary EU Cyber Resilience Act (CRA) readiness practices and documenting them with a checklist and disclaimer. Use when the user mentions the CRA badge, the CRA Readiness badge, Security Slam, Cyber Resilience Act, CRA readiness, EU CRA for open source, vulnerability management policy, end-of-life or support period policy, or the project steward's CRA guidelines. Audits the eight readiness items, fills gaps, and publishes a CRA-READINESS.md with the required no-liability disclaimer.
 ---
 
 # CRA Badge
