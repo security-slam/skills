@@ -32,6 +32,9 @@ repository:
     - name: Jason Meridth
       email: jmeridth@gmail.com
       primary: true
+    - name: Eddie Knight
+      social: https://github.com/eddie-knight
+      primary: false
   license:
     url: https://github.com/security-slam/skills/blob/main/LICENSE
     expression: Apache-2.0
