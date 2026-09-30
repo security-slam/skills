@@ -14,7 +14,8 @@ permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}
-  cancel-in-progress: true
+  # Never cancel a scan partway through; let the running one finish
+  cancel-in-progress: false
 
 jobs:
   assess:
@@ -34,6 +35,7 @@ jobs:
         with:
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
+          # Fine-grained read-only PAT. To use octo-sts instead, see references/octo-sts-token.md
           token: ${{ secrets.PVTR_GITHUB_TOKEN }}
           catalog: "osps-baseline-2026-02"
           upload-sarif: "true"
