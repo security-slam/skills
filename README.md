@@ -2,7 +2,7 @@
 
 A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace for earning [Security Slam](https://securityslam.com) project badges.
 
-The marketplace is named `security-slam`. It ships one plugin, `security-slam-skills`, with one skill per project badge. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.
+The marketplace is named `security-slam`. It ships one plugin, `security-slam-skills`, with one skill per project badge and a `slam-status` skill that checks all six. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.
 
 ## Install
 
@@ -24,7 +24,7 @@ To try a local checkout, pass the directory path in place of `security-slam/skil
 
 ## Skills
 
-Start with Cleaner. Every other badge adds links to the Security Insights file it creates.
+Not sure where a project stands? Run `/slam-status` first. Otherwise start with Cleaner. Every other badge adds links to the Security Insights file it creates.
 
 | Skill | Badge requirement |
 | --- | --- |
@@ -34,6 +34,7 @@ Start with Cleaner. Every other badge adds links to the Security Insights file i
 | `mechanizer` | Automate Baseline evaluation and publish results: 100% on LFX Insights or zero failures from the OSPS Baseline GitHub Action. |
 | `defender` | Meet the OSPS Baseline for the project's maturity level and earn the bestpractices.dev Baseline badge. |
 | `cra` | Implement voluntary EU Cyber Resilience Act (CRA) readiness practices and publish a readiness checklist with a disclaimer. |
+| `slam-status` | Check a repo against all six badges at once and recommend which one to work on next. Read-only. |
 
 Claude picks a skill when your request matches it. You can also call one by name, for example `/cleaner`.
 
