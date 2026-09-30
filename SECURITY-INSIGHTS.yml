@@ -22,6 +22,7 @@ project:
     comment: Report vulnerabilities through GitHub private vulnerability reporting on security-slam/skills.
   documentation:
     quickstart-guide: https://github.com/security-slam/skills/blob/main/README.md#install
+    detailed-guide: https://github.com/security-slam/skills/blob/main/README.md
     release-process: https://github.com/security-slam/skills/blob/main/README.md#releasing
 
 repository:
