@@ -7,6 +7,18 @@ A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace 
 
 The marketplace is named `security-slam`. It ships one plugin, `security-slam-skills`, with one skill per project badge and a `slam-status` skill that checks all six. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.
 
+## Quick start
+
+Run this in the repository you want to check:
+
+```bash
+claude plugin marketplace add security-slam/skills
+claude plugin install security-slam-skills@security-slam
+claude "/security-slam-skills:slam-status"
+```
+
+`slam-status` is read-only. It reports where you stand on all six badges and suggests one next step.
+
 ## Status
 
 Early preview. The skills work end to end on four repositories, and each one earned evidence for all six badges using the skills:
