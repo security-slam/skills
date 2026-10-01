@@ -46,7 +46,7 @@ The individual recognitions (Security Advocate, Security Champion, Advisor) go t
 
 | Dependency | Version |
 | --- | --- |
-| OSPS Baseline | 2026-02-19 |
+| OSPS Baseline | 2026-08-28 |
 | Security Insights schema | 2.2.0 |
 | Gemara schema | 1.5.0 |
 

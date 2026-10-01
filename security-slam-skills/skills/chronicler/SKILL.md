@@ -7,7 +7,7 @@ description: Earn the Security Slam Chronicler badge by completing every OSPS Ba
 
 The Chronicler badge requires completing all OSPS (Open Source Project Security) Baseline documentation controls for the project's maturity level.
 
-Source: [securityslam.com/library/chronicler](https://securityslam.com/library/chronicler) and the [Baseline documentation controls](https://baseline.openssf.org/versions/2026-02-19#documentation).
+Source: [securityslam.com/library/chronicler](https://securityslam.com/library/chronicler) and the [Baseline documentation controls](https://baseline.openssf.org/versions/2026-08-28#documentation).
 
 ## Critical Rules
 

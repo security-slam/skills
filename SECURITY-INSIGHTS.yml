@@ -73,7 +73,7 @@ repository:
         type: other
         comment: Weekly and on every push to main, the OSPS Baseline action runs the pvtr-github-repo-scanner against Maturity Level 1 controls.
         rulesets:
-          - osps-baseline-2026-02
+          - osps-baseline-2026-08
         integration:
           adhoc: false
           ci: true

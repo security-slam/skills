@@ -49,8 +49,8 @@ jobs:
           # The built-in GITHUB_TOKEN cannot read the repo settings the scanner checks.
           # octo-sts issues a short-lived, read-only GitHub App token instead of a PAT.
           token: ${{ steps.octo-sts.outputs.token }}
-          # Matches the OSPS Baseline release this repo targets (2026-02-19)
-          catalog: "osps-baseline-2026-02"
+          # Matches the OSPS Baseline release this repo targets (2026-08-28)
+          catalog: "osps-baseline-2026-08"
           upload-sarif: "true"
           fail-on-error: "true"
 

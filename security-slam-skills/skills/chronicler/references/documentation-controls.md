@@ -1,6 +1,6 @@
 # Documentation Controls: Drafting Guide
 
-Control text comes from the [OSPS Baseline 2026-02-19](https://baseline.openssf.org/versions/2026-02-19#documentation). The drafting notes are practical guidance, not normative text.
+Control text comes from the [OSPS Baseline 2026-08-28](https://baseline.openssf.org/versions/2026-08-28#documentation). The drafting notes are practical guidance, not normative text.
 
 ## OSPS-DO-01.01 User Guides (Level 1)
 
