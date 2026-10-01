@@ -1,0 +1,198 @@
+# Copyright 2026 Security Slam contributors
+# SPDX-License-Identifier: Apache-2.0
+
+# Gemara v1.5.0 capability catalog for the security-slam/skills CI and release
+# pipeline. Scope: .github/workflows/*, .github/chainguard/*.sts.yaml,
+# .github/release-drafter.yml, and the "main" branch ruleset.
+# Paired with threat-catalog.yaml in this directory.
+#
+# Validate:
+#   cue vet -c -d '#CapabilityCatalog' github.com/gemaraproj/gemara@v1.5.0 docs/security/capability-catalog.yaml
+metadata:
+  id: SEC.SLAM.SKILLS.CI.CAPS
+  type: CapabilityCatalog
+  gemara-version: "1.5.0"
+  version: "0.1.0"
+  date: "2026-10-01T00:00:00Z"
+  draft: true
+  description: |
+    Capabilities of the security-slam/skills CI and release pipeline: the
+    GitHub Actions workflows, the octo-sts trust policies, the release-drafter
+    configuration, and the ruleset that protects the main branch. Each
+    capability cites the file or setting that provides it.
+  author:
+    id: security-slam-skills-maintainers
+    name: security-slam/skills maintainers
+    type: Software Assisted
+    description: Drafted with Claude Code from repository evidence. Pending maintainer review.
+  mapping-references:
+    - id: CCC
+      title: Common Cloud Controls Core
+      version: v2025.10
+      url: https://github.com/finos/common-cloud-controls/releases/tag/v2025.10
+      description: Reusable security controls, capabilities, and threats maintained by FINOS.
+
+title: security-slam/skills CI and Release Pipeline Capabilities
+
+groups:
+  - id: change-intake
+    title: Change Intake
+    description: Accepting, validating, and merging pull requests into main
+  - id: release
+    title: Release
+    description: Turning merged changes into version tags and published GitHub releases
+  - id: identity
+    title: Identity and Access
+    description: Issuing credentials to workflows and enforcing who can change main
+  - id: automation
+    title: Scheduled and Event Automation
+    description: Workflows that act on the repository without a human pressing merge
+  - id: supply-chain
+    title: Pipeline Supply Chain
+    description: Third-party actions, reusable workflows, and packages the pipeline executes
+
+imports:
+  - reference-id: CCC
+    entries:
+      - reference-id: CCC.Core.CP06
+        remarks: >-
+          Access Control. The main ruleset, repository roles, and octo-sts trust
+          policies decide who and what can change main, tags, and releases.
+      - reference-id: CCC.Core.CP18
+        remarks: >-
+          Resource Versioning. Releases are versioned by plugin.json and published
+          as vX.Y.Z tags plus a moving major tag (for example v0).
+      - reference-id: CCC.Core.CP20
+        remarks: >-
+          Resource Tagging. Pull request labels drive release gating, version
+          resolution, and changelog categories.
+      - reference-id: CCC.Core.CP29
+        remarks: >-
+          Active Ingestion. Workflows ingest pull request events, PR titles,
+          fork-contributed files, and third-party code at run time.
+
+capabilities:
+  - id: SEC.SLAM.SKILLS.CI.CAP01
+    title: Pull Request Validation Checks
+    description: |
+      .github/workflows/pre-commit.yaml and .github/workflows/version-check.yaml
+      run on the pull_request event, including pull requests from forks. They
+      check out the PR head, execute the hooks in the PR's .pre-commit-config.yaml,
+      and require a plugin.json version bump when plugin files change. Both run
+      with a contents:read GITHUB_TOKEN. The main ruleset requires the
+      "pre-commit" and "version-check" contexts from the GitHub Actions app
+      (integration 15368) before merge.
+    group: change-intake
+
+  - id: SEC.SLAM.SKILLS.CI.CAP02
+    title: Privileged Pull Request Labeling
+    description: |
+      .github/workflows/auto-labeler.yaml runs on pull_request_target (opened,
+      reopened, edited, synchronize), so it runs in the base repository context
+      for fork pull requests. It calls the pinned
+      github-community-projects/ospo-reusable-workflows auto-labeler, which runs
+      release-drafter's autolabeler with pull-requests:write and issues:write.
+      It does not check out PR code. The autolabeler rules in
+      .github/release-drafter.yml map PR title prefixes and changed paths to
+      labels, including the "release" label for any change under
+      security-slam-skills/ or .claude-plugin/marketplace.json.
+    group: change-intake
+
+  - id: SEC.SLAM.SKILLS.CI.CAP03
+    title: Merge Gating on Main
+    description: |
+      Repository ruleset 24061922 targets the default branch. It blocks deletion
+      and force pushes, requires signed commits, requires a pull request, and
+      requires the pre-commit and version-check status checks. It requires zero
+      approving reviews and does not require code owner review, although
+      .github/CODEOWNERS assigns @security-slam/developers to every path.
+      Organization admins may bypass the ruleset through a pull request.
+    group: identity
+
+  - id: SEC.SLAM.SKILLS.CI.CAP04
+    title: Automated Release on Merge
+    description: |
+      .github/workflows/release.yaml runs on pull_request_target "closed" for
+      main when plugin paths change, and on workflow_dispatch from main only
+      (a job-level condition skips any other ref). It calls the
+      pinned ospo-reusable-workflows release-minimal workflow with
+      contents:write. That workflow releases only when the PR was merged and
+      carries the "release" label, or unconditionally on workflow_dispatch. It
+      checks out main, reads the version from
+      security-slam-skills/.claude-plugin/plugin.json, drafts a release with
+      release-drafter, refuses to move an existing full version tag, pushes the
+      full tag, force-pushes the major tag, and publishes the release.
+    group: release
+
+  - id: SEC.SLAM.SKILLS.CI.CAP05
+    title: Changelog and Version Resolution
+    description: |
+      .github/release-drafter.yml builds release notes from merged PRs. It
+      groups entries into categories by label (Breaking, Security, Features,
+      Bug Fixes, Maintenance, Performance) and renders each entry with the
+      template "- $TITLE @$AUTHOR (#$NUMBER)". The release workflow publishes
+      the notes without a manual review step (publish: true).
+    group: release
+
+  - id: SEC.SLAM.SKILLS.CI.CAP06
+    title: Workflow Token Federation via octo-sts
+    description: |
+      Two trust policies in .github/chainguard let workflows exchange a GitHub
+      Actions OIDC token for a short-lived octo-sts GitHub App token.
+      osps-baseline.sts.yaml grants actions, administration, contents, and
+      security_events read. pre-commit-autoupdate.sts.yaml grants contents and
+      pull_requests write. Both bind the subject to refs/heads/main using
+      immutable owner and repository IDs and bind job_workflow_ref to a single
+      workflow file on main. The octo-sts app is installed on this repository
+      only. Its installation still holds broader permissions than either policy
+      requests, including administration:write, because the app's permission
+      set is fixed by its publisher; the installation sets the ceiling for any
+      policy file merged to main.
+    group: identity
+
+  - id: SEC.SLAM.SKILLS.CI.CAP07
+    title: Scheduled Dependency Maintenance
+    description: |
+      .github/workflows/pre-commit-autoupdate.yaml runs weekly and on
+      workflow_dispatch. It checks out main without persisted credentials,
+      installs pre-commit from the hash-pinned .github/requirements/pre-commit.txt,
+      and runs "pre-commit autoupdate --freeze". Only then does it obtain the
+      pre-commit-autoupdate octo-sts token, which
+      peter-evans/create-pull-request uses to push a branch and open a pull
+      request. Dependabot (.github/dependabot.yaml) separately opens weekly
+      GitHub Actions and pip update PRs.
+    group: automation
+
+  - id: SEC.SLAM.SKILLS.CI.CAP08
+    title: Scheduled Baseline Compliance Scanning
+    description: |
+      .github/workflows/osps-baseline.yaml runs weekly, on push to main, and on
+      workflow_dispatch. It obtains the read-only osps-baseline octo-sts token,
+      passes it to revanite-io/osps-baseline-action, uploads failed controls as
+      SARIF to code scanning, and uploads the evaluation_results directory as a
+      workflow artifact retained for 30 days.
+    group: automation
+
+  - id: SEC.SLAM.SKILLS.CI.CAP09
+    title: Pull Request and Issue Housekeeping
+    description: |
+      .github/workflows/mark-ready-when-ready.yaml marks a same-repository draft
+      PR ready for review once checks pass and the mark-ready-when-ready label is
+      present. It runs kenyonj/mark-ready-when-ready with contents:write and
+      pull-requests:write. .github/workflows/stale.yaml runs daily with
+      issues:write and pull-requests:write to label and close inactive issues
+      and PRs.
+    group: automation
+
+  - id: SEC.SLAM.SKILLS.CI.CAP10
+    title: Third-Party Action and Reusable Workflow Execution
+    description: |
+      Every workflow references third-party actions and reusable workflows by
+      full commit SHA with a version comment, and most jobs start with
+      step-security/harden-runner in egress audit mode. Repository Actions
+      settings allow all actions and do not require SHA pinning, so pinning is a
+      convention rather than an enforced rule. Default workflow token
+      permissions are read-only and workflows cannot approve pull requests.
+      Fork pull request workflows need approval only for first-time
+      contributors.
+    group: supply-chain

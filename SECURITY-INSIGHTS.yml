@@ -57,7 +57,9 @@ repository:
   security:
     assessments:
       self:
-        comment: A self-assessment has not been completed yet.
+        evidence: https://github.com/security-slam/skills/blob/main/docs/security/threat-catalog.yaml
+        date: '2026-10-01'
+        comment: Gemara v1.5.0 threat assessment of the CI and release pipeline, with its capability catalog in docs/security/capability-catalog.yaml. Drafted with the inspector skill; maintainers review changes to it through pull requests.
       third-party:
         - name: OpenSSF Best Practices OSPS Baseline
           evidence: https://www.bestpractices.dev/projects/15132
