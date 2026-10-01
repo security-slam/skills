@@ -9,19 +9,21 @@ The marketplace is named `security-slam`. It ships one plugin, `security-slam-sk
 
 ## Status
 
-Early preview. The skills work end to end on two repositories, and each one earned evidence for all six badges using the skills:
+Early preview. The skills work end to end on four repositories, and each one earned evidence for all six badges using the skills:
 
 | Repository | What it is | Baseline Level 1 |
 | --- | --- | --- |
 | [security-slam/skills](https://github.com/security-slam/skills) | This repository: Markdown and YAML, released on each plugin change | [bestpractices.dev](https://www.bestpractices.dev/projects/15132/baseline-1) |
 | [security-slam/website](https://github.com/security-slam/website) | A TypeScript site with npm dependencies, deployed and released on every merge, with existing Gemara catalogs | [bestpractices.dev](https://www.bestpractices.dev/projects/15142/baseline-1) |
+| [privateerproj/privateer](https://github.com/privateerproj/privateer) | A Go CLI that ships release binaries with GoReleaser | [bestpractices.dev](https://www.bestpractices.dev/projects/15145/baseline-1) |
+| [privateerproj/privateer-sdk](https://github.com/privateerproj/privateer-sdk) | A Go library that inherits its security policy and contributing guide from an org `.github` repository | [bestpractices.dev](https://www.bestpractices.dev/projects/12018/baseline-1) |
 
 Not yet tested:
 
-- Projects that publish compiled artifacts, such as binaries, container images, or packages.
-- OSPS Baseline Level 2 and 3 paths, such as release signing, SBOMs (software bills of materials), and release verification docs.
+- Projects that publish container images or registry packages.
+- OSPS Baseline Level 2 and 3 paths, such as release signing, SBOMs (software bills of materials), and release verification docs. All four repositories stopped at Level 1.
 - The prose self-assessment option of `inspector`, and its hand-off to the gemara-ai plugin.
-- Projects hosted outside GitHub, and projects that span several repositories.
+- Projects hosted outside GitHub.
 
 The skills pin the specification versions listed under [Versions Targeted](#versions-targeted). When those specifications change, the skills can lag behind until a release updates them.
 
