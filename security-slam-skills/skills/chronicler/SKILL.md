@@ -21,18 +21,18 @@ Source: [securityslam.com/library/chronicler](https://securityslam.com/library/c
 
 Complete every control at and below the chosen level. Level 2 includes Level 1. Level 3 includes Levels 1 and 2.
 
-Controls that start "When the project has made a release" apply only after a first release. For a project with no releases, mark them not applicable and say why.
+The Applies column copies each control's condition from the Baseline text. Read it from the table; never infer it. "After first release" controls are not applicable to a project that has never released. A project that deploys on every merge to main, such as a website, has effectively released.
 
-| Level | Control | Requirement | Usual home | Security Insights field |
-| --- | --- | --- | --- | --- |
-| 1 | OSPS-DO-01.01 | User guides for all basic functionality | README, docs site | `project.documentation.detailed-guide` (required: the Baseline scanner reads only this field), plus `quickstart-guide` if one exists |
-| 1 | OSPS-DO-02.01 | A guide for reporting defects | CONTRIBUTING.md, issue templates | `repository.documentation.contributing-guide` |
-| 2 | OSPS-DO-06.01 | How the project selects, obtains, and tracks dependencies | CONTRIBUTING.md or a dependency policy doc | `repository.documentation.dependency-management-policy` |
-| 2 | OSPS-DO-07.01 | How to build the software, including required libraries, frameworks, SDKs, and dependencies | CONTRIBUTING.md, BUILDING.md | `repository.documentation.contributing-guide` |
-| 3 | OSPS-DO-03.01 | How to verify the integrity and authenticity of release assets | Release verification doc | `project.documentation.signature-verification` |
-| 3 | OSPS-DO-03.02 | How to verify the identity of the person or process that authored a release | Release verification doc | `project.documentation.signature-verification` |
-| 3 | OSPS-DO-04.01 | Scope and duration of support for each release | SUPPORT.md | `project.documentation.support-policy` |
-| 3 | OSPS-DO-05.01 | When releases stop receiving security updates | SUPPORT.md, SECURITY.md | `project.documentation.support-policy` |
+| Level | Control | Applies | Requirement | Usual home | Security Insights field |
+| --- | --- | --- | --- | --- | --- |
+| 1 | OSPS-DO-01.01 | After first release | User guides for all basic functionality | README, docs site | `project.documentation.detailed-guide` (required: the Baseline scanner reads only this field), plus `quickstart-guide` if one exists |
+| 1 | OSPS-DO-02.01 | After first release | A guide for reporting defects | CONTRIBUTING.md, issue templates | `repository.documentation.contributing-guide` |
+| 2 | OSPS-DO-06.01 | After first release | How the project selects, obtains, and tracks dependencies | CONTRIBUTING.md or a dependency policy doc | `repository.documentation.dependency-management-policy` |
+| 2 | OSPS-DO-07.01 | Always | How to build the software, including required libraries, frameworks, SDKs, and dependencies | CONTRIBUTING.md, BUILDING.md | `repository.documentation.contributing-guide` |
+| 3 | OSPS-DO-03.01 | After first release | How to verify the integrity and authenticity of release assets | Release verification doc | `project.documentation.signature-verification` |
+| 3 | OSPS-DO-03.02 | After first release | How to verify the identity of the person or process that authored a release | Release verification doc | `project.documentation.signature-verification` |
+| 3 | OSPS-DO-04.01 | After first release | Scope and duration of support for each release | SUPPORT.md | `project.documentation.support-policy` |
+| 3 | OSPS-DO-05.01 | After first release | When releases stop receiving security updates | SUPPORT.md, SECURITY.md | `project.documentation.support-policy` |
 
 For drafting guidance and examples for each control, see [references/documentation-controls.md](references/documentation-controls.md).
 

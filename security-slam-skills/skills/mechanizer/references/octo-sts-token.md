@@ -27,7 +27,13 @@ permissions:
   security_events: read
 ```
 
-Repositories created after mid-2026 may use GitHub's immutable OIDC subject format, `repo:OWNER@OWNER_ID/REPO@REPO_ID:ref:refs/heads/main`. Get the IDs with `gh api orgs/OWNER --jq .id` and `gh api repos/OWNER/REPO --jq .id`. Match whatever format existing trust policies in the repository already use.
+Read the repository's subject format from the API; never infer it from the repository's age or name:
+
+```bash
+gh api repos/OWNER/REPO/actions/oidc/customization/sub
+```
+
+If the response has `"use_immutable_subject": true`, the subject uses the immutable format, `repo:OWNER@OWNER_ID/REPO@REPO_ID:ref:refs/heads/main`, and the response's `sub_claim_prefix` gives the exact prefix. Otherwise use `repo:OWNER/REPO:ref:refs/heads/main`. A trust policy with the wrong format never matches, and the token exchange fails.
 
 ## Workflow Changes
 
