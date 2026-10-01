@@ -9,11 +9,16 @@ The marketplace is named `security-slam`. It ships one plugin, `security-slam-sk
 
 ## Status
 
-Early preview. The skills work end to end, but they have been tested on one repository: this one. Using its own skills, this repository earned evidence for all six badges, including a passing OSPS Baseline scan and the [bestpractices.dev Baseline Level 1 badge](https://www.bestpractices.dev/projects/15132/baseline-1).
+Early preview. The skills work end to end on two repositories, and each one earned evidence for all six badges using the skills:
+
+| Repository | What it is | Baseline Level 1 |
+| --- | --- | --- |
+| [security-slam/skills](https://github.com/security-slam/skills) | This repository: Markdown and YAML, released on each plugin change | [bestpractices.dev](https://www.bestpractices.dev/projects/15132/baseline-1) |
+| [security-slam/website](https://github.com/security-slam/website) | A TypeScript site with npm dependencies, deployed and released on every merge, with existing Gemara catalogs | [bestpractices.dev](https://www.bestpractices.dev/projects/15142/baseline-1) |
 
 Not yet tested:
 
-- Projects that build and release artifacts. This repository ships Markdown and YAML only.
+- Projects that publish compiled artifacts, such as binaries, container images, or packages.
 - OSPS Baseline Level 2 and 3 paths, such as release signing, SBOMs (software bills of materials), and release verification docs.
 - The prose self-assessment option of `inspector`, and its hand-off to the gemara-ai plugin.
 - Projects hosted outside GitHub, and projects that span several repositories.
