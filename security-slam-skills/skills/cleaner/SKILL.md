@@ -65,6 +65,7 @@ Always:
 - Set `header.url` to the raw URL of the file on the default branch.
 - Set `last-updated` and `last-reviewed` to today in `YYYY-MM-DD` form, quoted.
 - Use absolute HTTPS URLs.
+- Set `project.documentation.detailed-guide` whenever a user guide exists, including a README with usage sections. The OSPS Baseline scanner reads only this field for OSPS-DO-01.01, so leaving it out fails that control even when the guide exists. `quickstart-guide` alone does not count.
 
 Correct:
 
