@@ -62,7 +62,7 @@ repository:
         comment: Gemara v1.5.0 threat assessment of the CI and release pipeline, with its capability catalog in docs/security/capability-catalog.yaml. Drafted with the inspector skill; maintainers review changes to it through pull requests.
       third-party:
         - name: OpenSSF Best Practices OSPS Baseline
-          evidence: https://www.bestpractices.dev/projects/15132
+          evidence: https://www.bestpractices.dev/projects/15132/baseline-1
           date: '2026-10-01'
           comment: OSPS Baseline Level 1 (criteria v2026.08.28), self-reported on bestpractices.dev with autodetected answers.
     tools:

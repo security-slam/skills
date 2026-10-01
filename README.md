@@ -1,7 +1,7 @@
 # security-slam/skills
 
 [![OSPS Baseline](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml/badge.svg)](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15132/baseline)](https://www.bestpractices.dev/projects/15132)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15132/baseline)](https://www.bestpractices.dev/projects/15132/baseline-1)
 
 A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace for earning [Security Slam](https://securityslam.com) project badges.
 
@@ -9,7 +9,7 @@ The marketplace is named `security-slam`. It ships one plugin, `security-slam-sk
 
 ## Status
 
-Early preview. The skills work end to end, but they have been tested on one repository: this one. Using its own skills, this repository earned evidence for all six badges, including a passing OSPS Baseline scan and the [bestpractices.dev Baseline Level 1 badge](https://www.bestpractices.dev/projects/15132).
+Early preview. The skills work end to end, but they have been tested on one repository: this one. Using its own skills, this repository earned evidence for all six badges, including a passing OSPS Baseline scan and the [bestpractices.dev Baseline Level 1 badge](https://www.bestpractices.dev/projects/15132/baseline-1).
 
 Not yet tested:
 
