@@ -7,6 +7,21 @@ A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace 
 
 The marketplace is named `security-slam`. It ships one plugin, `security-slam-skills`, with one skill per project badge and a `slam-status` skill that checks all six. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.
 
+## Status
+
+Early preview. The skills work end to end, but they have been tested on one repository: this one. Using its own skills, this repository earned evidence for all six badges, including a passing OSPS Baseline scan and the [bestpractices.dev Baseline Level 1 badge](https://www.bestpractices.dev/projects/15132).
+
+Not yet tested:
+
+- Projects that build and release artifacts. This repository ships Markdown and YAML only.
+- OSPS Baseline Level 2 and 3 paths, such as release signing, SBOMs (software bills of materials), and release verification docs.
+- The prose self-assessment option of `inspector`, and its hand-off to the gemara-ai plugin.
+- Projects hosted outside GitHub, and projects that span several repositories.
+
+The skills pin the specification versions listed under [Versions Targeted](#versions-targeted). When those specifications change, the skills can lag behind until a release updates them.
+
+If a skill gets something wrong on your project, please [report it](CONTRIBUTING.md#reporting-bugs).
+
 ## Install
 
 From inside Claude Code:
