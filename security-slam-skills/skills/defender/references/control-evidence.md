@@ -36,7 +36,7 @@ See the `chronicler` skill.
 | --- | --- |
 | GV-01.01, 01.02 Members and roles | GOVERNANCE.md or MAINTAINERS lists who holds sensitive access and what each role does |
 | GV-02.01 Public discussion | Issues or Discussions enabled: `gh api repos/OWNER/REPO --jq '.has_issues, .has_discussions'` |
-| GV-03.01, 03.02 Contribution guide | CONTRIBUTING.md explains the process and acceptance requirements |
+| GV-03.01, 03.02 Contribution guide | CONTRIBUTING.md explains the process and acceptance requirements. GV-03.01 also passes if the docs clearly state that public contributions are not accepted. |
 | GV-04.01 Review before escalated access | Governance doc states how people are vetted before getting write or admin |
 
 ## LE: Legal
@@ -45,7 +45,7 @@ See the `chronicler` skill.
 | --- | --- |
 | LE-01.01 Contributor assertion on every commit | DCO app or check enforced, or CLA bot required. count `Signed-off-by` lines in `git log -20 --format=%B` for a quick DCO signal |
 | LE-02.01, 02.02 OSI or FSF license | `gh api repos/OWNER/REPO/license --jq .license.spdx_id` |
-| LE-03.01, 03.02 License file present in repo and releases | LICENSE at root; release archives include it |
+| LE-03.01, 03.02 License file present in repo and releases | LICENSE, COPYING, `LICENSES/` (REUSE layout), or `LICENSE/` at the root; release archives include it |
 
 ## QA: Quality
 

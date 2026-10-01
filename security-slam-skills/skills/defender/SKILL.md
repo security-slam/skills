@@ -9,7 +9,7 @@ The Defender badge requires robust completeness with the OSPS (Open Source Proje
 
 Defender is the capstone. Cleaner, Chronicler, Inspector, and Mechanizer are stepping stones toward it.
 
-Source: [securityslam.com/library/defender](https://securityslam.com/library/defender) and the [OSPS Baseline 2026-02-19](https://baseline.openssf.org/versions/2026-02-19).
+Source: [securityslam.com/library/defender](https://securityslam.com/library/defender) and the [OSPS Baseline 2026-08-28](https://baseline.openssf.org/versions/2026-08-28).
 
 ## Critical Rules
 
@@ -30,7 +30,7 @@ Source: [securityslam.com/library/defender](https://securityslam.com/library/def
 
 ### 2. Gap analysis
 
-Load [references/osps-baseline-2026-02-19.md](references/osps-baseline-2026-02-19.md). For every control at and below the chosen level, check the repo and record the result. Use the commands in [references/control-evidence.md](references/control-evidence.md).
+Load [references/osps-baseline-2026-08-28.md](references/osps-baseline-2026-08-28.md). For every control at and below the chosen level, check the repo and record the result. Use the commands in [references/control-evidence.md](references/control-evidence.md).
 
 Report by family, with a summary line:
 

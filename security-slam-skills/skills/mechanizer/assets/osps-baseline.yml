@@ -37,7 +37,7 @@ jobs:
           repo: ${{ github.event.repository.name }}
           # Fine-grained read-only PAT. To use octo-sts instead, see references/octo-sts-token.md
           token: ${{ secrets.PVTR_GITHUB_TOKEN }}
-          catalog: "osps-baseline-2026-02"
+          catalog: "osps-baseline-2026-08"
           upload-sarif: "true"
           fail-on-error: "true"
 

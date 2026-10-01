@@ -29,7 +29,7 @@ A file may omit `project` and inherit it through `header.project-si-source`.
 
 ## Where Badge Evidence Goes
 
-This table shows where Slam badge work usually lands. It is a practical guide, not an official mapping. The Baseline control IDs come from the 2026-02-19 catalog.
+This table shows where Slam badge work usually lands. It is a practical guide, not an official mapping. The Baseline control IDs come from the 2026-08-28 catalog.
 
 | Field | Evidence | Related Baseline controls | Badge |
 | --- | --- | --- | --- |
@@ -60,7 +60,7 @@ repository:
       - name: OSPS Baseline Scanner
         type: other
         rulesets:
-          - osps-baseline-2026-02
+          - osps-baseline-2026-08
         integration:
           adhoc: false
           ci: true
