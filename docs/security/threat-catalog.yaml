@@ -1,0 +1,433 @@
+# Copyright 2026 Security Slam contributors
+# SPDX-License-Identifier: Apache-2.0
+
+# Gemara v1.5.0 threat catalog for the security-slam/skills CI and release
+# pipeline. Capabilities live in capability-catalog.yaml in this directory.
+#
+# Every threat description ends with two lines:
+#   Exploitable by: the lowest repository role that can carry out the threat
+#     (outsider, fork contributor, triage, write, admin).
+#   Mitigation today: Mitigated, Partially mitigated, Not mitigated, or
+#     Accepted risk, with
+#     the evidence for that status.
+# The actors list repeats the roles in machine-readable form.
+#
+# Validate:
+#   cue vet -c -d '#ThreatCatalog' github.com/gemaraproj/gemara@v1.5.0 docs/security/threat-catalog.yaml
+metadata:
+  id: SEC.SLAM.SKILLS.CI.THREATS
+  type: ThreatCatalog
+  gemara-version: "1.5.0"
+  version: "0.1.0"
+  date: "2026-10-01T00:00:00Z"
+  draft: true
+  description: |
+    Threats to the security-slam/skills CI and release pipeline. Each threat
+    links to the capabilities it abuses, names the repository roles that can
+    exploit it, and states whether current configuration mitigates it.
+    Assessed against the repository and settings as of 2026-10-01.
+  author:
+    id: security-slam-skills-maintainers
+    name: security-slam/skills maintainers
+    type: Software Assisted
+    description: Drafted with Claude Code from repository evidence. Pending maintainer review.
+  mapping-references:
+    - id: CCC
+      title: Common Cloud Controls Core
+      version: v2025.10
+      url: https://github.com/finos/common-cloud-controls/releases/tag/v2025.10
+      description: Reusable security controls, capabilities, and threats maintained by FINOS.
+    - id: SEC.SLAM.SKILLS.CI.CAPS
+      title: security-slam/skills CI and Release Pipeline Capabilities
+      version: "0.1.0"
+      url: https://github.com/security-slam/skills/blob/main/docs/security/capability-catalog.yaml
+
+title: security-slam/skills CI and Release Pipeline Threats
+
+groups:
+  - id: spoofing
+    title: Spoofing
+    description: Misrepresenting identity or content origin
+  - id: tampering
+    title: Tampering
+    description: Modifying code, tags, releases, or metadata without authorization
+  - id: repudiation
+    title: Repudiation
+    description: Making it impossible to prove what was released and from where
+  - id: information-disclosure
+    title: Information Disclosure
+    description: Exposing credentials or restricted data
+  - id: elevation-of-privilege
+    title: Elevation of Privilege
+    description: Gaining permissions beyond the role an actor holds
+
+imports:
+  - reference-id: CCC
+    entries:
+      - reference-id: CCC.Core.TH01
+        remarks: >-
+          Access is Granted to Unauthorized Users. Applies through THR01, THR02,
+          and THR03, where ruleset and octo-sts configuration let one actor or
+          one stolen token change main, tags, or repository settings.
+      - reference-id: CCC.Core.TH13
+        remarks: >-
+          Resource Tags are Manipulated. Applies through THR08, where PR labels
+          gate releases and categorize security fixes in release notes.
+
+threats:
+  - id: SEC.SLAM.SKILLS.CI.THR01
+    title: Single Writer Merges Unreviewed Changes to Main
+    description: |
+      The main ruleset requires a pull request but zero approving reviews, and
+      it does not enforce .github/CODEOWNERS. One account with write access can
+      open and merge its own pull request. That pull request can change the
+      shipped skills, any workflow, or any octo-sts trust policy. A merge that
+      touches security-slam-skills/ is auto-labeled "release" and published to
+      every plugin user without a second person looking at it. A compromised
+      write account, or any token able to merge (see THR03), has the same reach.
+
+      Exploitable by: write.
+      Mitigation today: Accepted risk. Signed commits, required status checks,
+      a mandatory pull request, and organization-wide 2FA (two-factor
+      authentication) raise the cost. The maintainers chose not to require a
+      second reviewer while the project has two maintainers.
+    group: tampering
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP06
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP03
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP04
+    actors:
+      - id: write
+        name: Write collaborator
+        type: Human
+        description: Holds the write role, or controls a write account or merge-capable token.
+
+  - id: SEC.SLAM.SKILLS.CI.THR02
+    title: Write Access Escalates to Repository Administration via octo-sts
+    description: |
+      octo-sts reads trust policies from .github/chainguard on the default
+      branch and can mint any permission its GitHub App installation holds. The
+      installation includes administration:write, a permission set fixed by
+      the app's publisher. The two existing policies are tightly scoped and
+      bound to one workflow file on main. Nothing stops a new policy, or an
+      edited one, from requesting administration:write. Combined with THR01, a
+      single write collaborator can merge such a policy and a workflow that
+      uses it, then change repository settings that only admins should control,
+      including the main ruleset.
+
+      Exploitable by: write.
+      Mitigation today: Partially mitigated. The installation is limited to this
+      repository, so a policy merged here cannot reach other organization
+      repositories. Subject and job_workflow_ref binding stop forks and side
+      branches from using the existing policies. A writer who merges a new
+      policy to main (see THR01) can still mint administration:write for this
+      repository.
+    group: elevation-of-privilege
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP06
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP03
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP06
+    actors:
+      - id: write
+        name: Write collaborator
+        type: Human
+        description: Holds the write role, or controls a write account or merge-capable token.
+
+  - id: SEC.SLAM.SKILLS.CI.THR03
+    title: Write Token Exposed to Third-Party Packages in pre-commit Autoupdate
+    description: |
+      .github/workflows/pre-commit-autoupdate.yaml installs pre-commit and its
+      transitive PyPI dependencies and runs them in the same job that later
+      holds an octo-sts write token. If that code ran while the token was
+      available, it could read the token. harden-runner runs in audit mode, so
+      it records exfiltration but does not block it. With that token an
+      attacker could push branches and open pull requests, and likely merge one
+      on its own because main requires zero approvals.
+
+      Exploitable by: outsider (by compromising an upstream PyPI package the
+      job installs).
+      Mitigation today: Mitigated. pre-commit installs from a hash-pinned
+      requirements file. The job checks out without persisted credentials and
+      requests the token only after pre-commit has run. The token carries
+      contents and pull_requests write only, lives about an hour, and is issued
+      only to this workflow on main. The credential-free push path is verified
+      by the next run that finds a hook update.
+    group: elevation-of-privilege
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP29
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP06
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP07
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP10
+    actors:
+      - id: outsider
+        name: Outsider
+        type: Human
+        description: No repository role. Reaches the pipeline through an upstream package or action it controls.
+
+  - id: SEC.SLAM.SKILLS.CI.THR04
+    title: Manual Dispatch Releases Code That Never Reached Main
+    description: |
+      .github/workflows/release.yaml accepts workflow_dispatch. The pinned
+      release-minimal workflow treats a dispatch as an unconditional release and
+      checks out the ref the dispatcher selected, not main. A writer can
+      dispatch the workflow against an unmerged branch and publish an official
+      vX.Y.Z release and tag from code that skipped review and required
+      checks. The run also force-moves the major tag to that commit.
+
+      Exploitable by: write.
+      Mitigation today: Mitigated. A job-level condition runs a manual release
+      only when the dispatched ref is refs/heads/main. The tag check also
+      refuses to move an existing full version tag.
+    group: tampering
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP18
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP03
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP04
+    actors:
+      - id: write
+        name: Write collaborator
+        type: Human
+        description: Holds the write role, or controls a write account or merge-capable token.
+
+  - id: SEC.SLAM.SKILLS.CI.THR05
+    title: Release Tags and Releases Are Mutable and Unattested
+    description: |
+      The only ruleset targets main. No ruleset protects tags, immutable
+      releases are disabled, the release workflow force-pushes the major tag by
+      design, and releases carry no signed tag or build provenance. Anyone who
+      holds contents:write (a writer, the release workflow token, or a stolen
+      token from THR03 or THR06) can create, move, or delete version tags and
+      edit published releases. A consumer who pins a tag cannot verify that the
+      tag still points at a reviewed commit on main.
+
+      Exploitable by: write.
+      Mitigation today: Partially mitigated. Commits on main are signed and the
+      release workflow will not move an existing full version tag. Nothing
+      prevents a direct API change to tags or releases.
+    group: repudiation
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP18
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP04
+    actors:
+      - id: write
+        name: Write collaborator
+        type: Human
+        description: Holds the write role, or controls a write account or merge-capable token.
+
+  - id: SEC.SLAM.SKILLS.CI.THR06
+    title: Compromised Third-Party Action or Reusable Workflow
+    description: |
+      The pipeline runs third-party code with write tokens: the
+      ospo-reusable-workflows release and auto-labeler workflows (contents:write
+      and pull-requests:write), kenyonj/mark-ready-when-ready (contents:write),
+      peter-evans/create-pull-request and revanite-io/osps-baseline-action
+      (octo-sts tokens), and step-security/harden-runner in every job. A
+      malicious upstream commit reaches this repository when a Dependabot bump
+      to its SHA merges. Dependabot groups minor and patch bumps, and main
+      requires no review, so one writer can merge that bump. Repository
+      settings allow all actions and do not require SHA pinning, so a future
+      pull request can add a tag-pinned action without a gate.
+
+      Exploitable by: outsider (by compromising an upstream action or reusable
+      workflow).
+      Mitigation today: Partially mitigated. Every current reference is pinned
+      to a full SHA, jobs start from permissions: {} and request only what they
+      use, and Dependabot surfaces updates for review. harden-runner audits but
+      does not block egress.
+    group: tampering
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP29
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP02
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP04
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP07
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP08
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP09
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP10
+    actors:
+      - id: outsider
+        name: Outsider
+        type: Human
+        description: No repository role. Reaches the pipeline through an upstream package or action it controls.
+
+  - id: SEC.SLAM.SKILLS.CI.THR07
+    title: Pull Request Weakens the Checks That Gate It
+    description: |
+      pre-commit.yaml and version-check.yaml run on pull_request, so GitHub
+      uses the workflow files and .pre-commit-config.yaml from the pull request
+      itself. A pull request can edit those files to skip hooks or always pass,
+      and the required "pre-commit" and "version-check" contexts still turn
+      green. A fork pull request can also run arbitrary code through a local
+      pre-commit hook, though only with a read-only token on a public
+      repository. Required checks therefore catch mistakes, not a hostile
+      contributor.
+
+      Exploitable by: fork contributor.
+      Mitigation today: Partially mitigated. A writer must still merge the pull
+      request, first-time contributors need approval before workflows run, and
+      the required checks are pinned to the GitHub Actions app so another app
+      cannot post a fake status. No rule requires a reviewer to look at
+      workflow or hook config changes.
+    group: tampering
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP29
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP01
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP03
+    actors:
+      - id: fork-contributor
+        name: Fork contributor
+        type: Human
+        description: Opens pull requests from a fork with no repository role.
+      - id: write
+        name: Write collaborator
+        type: Human
+        description: Holds the write role, or controls a write account or merge-capable token.
+
+  - id: SEC.SLAM.SKILLS.CI.THR08
+    title: Release Notes and Release Gating Manipulated Through Titles and Labels
+    description: |
+      release-drafter copies each PR title verbatim into published release
+      notes, and the release workflow publishes without a human reviewing the
+      notes. A fork contributor controls the title, so a merged PR can place
+      misleading text or links in an official release. Labels decide whether a
+      merged plugin change releases ("release") and where a fix appears
+      ("security" is an exclusive category). A triage user can remove the
+      "release" label before merge to suppress a release, or relabel a security
+      fix so it does not appear under Security.
+
+      Exploitable by: fork contributor (titles), triage (labels).
+      Mitigation today: Partially mitigated. A writer must merge, the release
+      version comes from plugin.json rather than labels, and the auto-labeler
+      re-adds "release" when the PR is edited or synchronized. Nothing reviews
+      the published notes.
+    group: spoofing
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP20
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP02
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP05
+    actors:
+      - id: fork-contributor
+        name: Fork contributor
+        type: Human
+        description: Opens pull requests from a fork with no repository role.
+      - id: triage
+        name: Triage collaborator
+        type: Human
+        description: Holds the triage role and can add or remove labels.
+
+  - id: SEC.SLAM.SKILLS.CI.THR09
+    title: Fork Code Runs in a Privileged pull_request_target Workflow
+    description: |
+      auto-labeler.yaml and release.yaml run on pull_request_target, which
+      grants base-repository write tokens to runs triggered by fork pull
+      requests. If either workflow checked out or executed PR code, a fork
+      contributor could take over those tokens.
+
+      Exploitable by: fork contributor.
+      Mitigation today: Mitigated. Neither workflow checks out PR code. The
+      auto-labeler only calls the release-drafter autolabeler API. The release
+      workflow checks out the base branch, and it releases only when the PR
+      was merged. Both pass PR data through env variables, not inline
+      expressions. This holds only while the workflows keep that shape.
+    group: elevation-of-privilege
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP29
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP02
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP04
+    actors:
+      - id: fork-contributor
+        name: Fork contributor
+        type: Human
+        description: Opens pull requests from a fork with no repository role.
+
+  - id: SEC.SLAM.SKILLS.CI.THR10
+    title: Baseline Scanner Token or Results Exposed
+    description: |
+      osps-baseline.yaml hands an octo-sts token with administration,
+      security_events, actions, and contents read to a third-party action, and
+      uploads the evaluation_results directory as a workflow artifact. On a
+      public repository, signed-in GitHub users can download workflow
+      artifacts. If the results include settings or code scanning details that
+      GitHub otherwise restricts to collaborators, the artifact discloses them.
+      A review of the 2026-10-01 artifact found two SARIF result files and the
+      scanner log, with no tokens, keys, or email addresses. The results do
+      state pass or fail for settings-based controls, such as whether secret
+      scanning is enabled, which GitHub normally shows only to admins.
+
+      Exploitable by: outsider.
+      Mitigation today: Partially mitigated. The token is read-only, short-lived,
+      and only issued to this workflow on main. The artifact upload is not
+      restricted.
+    group: information-disclosure
+    capabilities:
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP06
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP08
+    actors:
+      - id: outsider
+        name: Outsider
+        type: Human
+        description: No repository role. Can download public workflow artifacts.
+
+  - id: SEC.SLAM.SKILLS.CI.THR11
+    title: Organization Admin Bypasses Main Protections
+    description: |
+      The main ruleset lists organization admins as bypass actors in pull
+      request mode, and admins can edit or disable the ruleset, the octo-sts
+      installation, and Actions settings. A compromised admin account can
+      merge unsigned or unchecked changes and trigger a release.
+
+      Exploitable by: admin.
+      Mitigation today: Partially mitigated. The organization requires 2FA,
+      and bypass still goes through a pull request, which leaves an audit
+      trail. Admin is the trust root for this pipeline, so this threat cannot
+      be fully mitigated in repository configuration.
+    group: elevation-of-privilege
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.CP06
+      - reference-id: SEC.SLAM.SKILLS.CI.CAPS
+        entries:
+          - reference-id: SEC.SLAM.SKILLS.CI.CAP03
+    actors:
+      - id: admin
+        name: Admin
+        type: Human
+        description: Organization or repository admin, or a compromised admin account.
