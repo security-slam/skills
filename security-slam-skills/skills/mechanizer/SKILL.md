@@ -101,7 +101,7 @@ The action assesses Maturity Level 1 only. That is expected and still satisfies 
 ### 5. Publish results
 
 - Keep the workflow on a schedule so results stay fresh, and upload results as an artifact.
-- Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab. With `fail-on-error: "true"`, the action exits before its SARIF upload, so failed controls reach only the workflow log and the results artifact. Read failures from the artifact's `pvtr/pvtr.sarif` in that case.
+- Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab. Use osps-baseline-action v1.5.2 or later. Through v1.5.1, `fail-on-error: "true"` exited before the SARIF upload, so failed controls reached only the workflow log and the results artifact (`pvtr/pvtr.sarif`). v1.5.1 also showed two-digit counts wrong in the workflow summary.
 - Add a status badge for the workflow to the README.
 
 ### 6. Record the tooling in Security Insights
