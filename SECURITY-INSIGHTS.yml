@@ -58,6 +58,11 @@ repository:
     assessments:
       self:
         comment: A self-assessment has not been completed yet.
+      third-party:
+        - name: OpenSSF Best Practices OSPS Baseline
+          evidence: https://www.bestpractices.dev/projects/15132
+          date: '2026-10-01'
+          comment: OSPS Baseline Level 1 (criteria v2026.08.28), self-reported on bestpractices.dev with autodetected answers.
     tools:
       - name: Dependabot
         type: SCA
