@@ -1,7 +1,7 @@
 header:
   schema-version: 2.2.0
-  last-updated: '2026-09-30'
-  last-reviewed: '2026-09-30'
+  last-updated: '2026-10-01'
+  last-reviewed: '2026-10-01'
   url: https://github.com/security-slam/skills/raw/main/SECURITY-INSIGHTS.yml
 
 project:
@@ -28,6 +28,7 @@ project:
     quickstart-guide: https://github.com/security-slam/skills/blob/main/README.md#install
     detailed-guide: https://github.com/security-slam/skills/blob/main/README.md
     release-process: https://github.com/security-slam/skills/blob/main/README.md#releasing
+    support-policy: https://github.com/security-slam/skills/blob/main/SECURITY.md#support-period-and-end-of-life
 
 repository:
   url: https://github.com/security-slam/skills
@@ -49,6 +50,7 @@ repository:
     expression: Apache-2.0
   release:
     automated-pipeline: true
+    changelog: https://github.com/security-slam/skills/releases
     distribution-points:
       - uri: https://github.com/security-slam/skills/releases
         comment: GitHub releases, published by the release workflow when a plugin change merges.

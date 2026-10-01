@@ -12,6 +12,12 @@ categories:
     when:
       labels:
         - "breaking"
+  - title: "🔒 Security"
+    # List a security fix only here, not again under Bug Fixes or Maintenance
+    exclusive: true
+    when:
+      labels:
+        - "security"
   - title: "🚀 Features"
     when:
       labels:
