@@ -28,6 +28,13 @@ gh repo view --json nameWithOwner,visibility,defaultBranchRef
 
 Note whether the project has releases (`gh release list --limit 1`). Several checks depend on it.
 
+Then find evidence the repository inherits from its organization:
+
+- **Parent Security Insights file:** if the repository's Security Insights file sets `header.project-si-source`, fetch that URL with `curl -sfL` and read the `project` fields from it. The spec requires the URL to answer an unauthenticated GET. If the fetch fails, say so and mark the checks that depend on it `Unknown`.
+- **Org default community files:** when the repository has no SECURITY.md, CONTRIBUTING.md, or CODE_OF_CONDUCT.md, GitHub serves the copy from the `OWNER/.github` repository. Check its root, `.github/`, and `docs/` folders, for example `gh api repos/OWNER/.github/contents/.github --jq '.[].name'`. Count a file found there as present.
+
+Label inherited evidence in the report, for example "SECURITY.md (org default)" or "vulnerability reporting (from project-si-source)".
+
 ### 2. Run the quick checks
 
 Check each badge in this order. Record a status and the evidence (a path, URL, or command result).
@@ -35,7 +42,7 @@ Check each badge in this order. Record a status and the evidence (a path, URL, o
 | Badge | Quick check | Evidence found when |
 | --- | --- | --- |
 | Cleaner | `find . -maxdepth 2 -iname 'security-insights.y*ml'` | The file exists, declares `schema-version` 2.x, and passes `cue vet` (see the `cleaner` skill). If `cue` is missing, report the file as "present, not validated". |
-| Chronicler | Look for user guides and a defect reporting guide (README, CONTRIBUTING.md, docs). | Both Level 1 docs exist. Higher levels need the maturity level, so report "Level 1 only checked" unless the user gave a level. |
+| Chronicler | Look for user guides and a defect reporting guide (README, CONTRIBUTING.md, docs). A section counts as a defect reporting guide when it tells people how to file a bug, whatever its heading says ("Reporting Bugs", "Issue Report Process", "Filing Issues"). | Both Level 1 docs exist. Higher levels need the maturity level, so report "Level 1 only checked" unless the user gave a level. |
 | Inspector | Look for a Gemara threat catalog or a self-assessment document, and for `repository.security.assessments.self.evidence` in the Security Insights file. | An assessment document exists and the Security Insights file links it. |
 | Mechanizer | `grep -rl 'osps-baseline-action' .github/workflows`, and check the project on [LFX Insights](https://insights.linuxfoundation.org/). | A scheduled Baseline scan workflow exists, or the project is on LFX Insights. Report the latest run result if you can read it. |
 | Defender | Search the README for a `bestpractices.dev` badge. | A Baseline badge from bestpractices.dev is in the README. |
@@ -94,4 +101,5 @@ If every badge shows `Evidence found`, tell the user to run each badge skill's s
 - **Not a git repository, or no remote:** run the file checks only and mark the GitHub checks `Unknown`.
 - **Project not hosted on GitHub:** mark Mechanizer `Unknown` and tell the user to ask Slam organizers about an alternate evaluation path.
 - **Multi-repository project:** report on the current repository only, and say so. Offer to run again in the other repositories.
+- **Org-level files:** a repository with only repository fields in its Security Insights file, and no SECURITY.md or CONTRIBUTING.md of its own, is not missing them. Check `header.project-si-source` and the `OWNER/.github` repository before reporting a gap.
 - **No releases yet:** say so in the report. Many Baseline controls apply only after a first release, which makes Chronicler and Defender easier to reach.
