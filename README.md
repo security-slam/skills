@@ -73,6 +73,10 @@ claude plugins uninstall security-slam-skills@security-slam
 claude plugins marketplace remove security-slam
 ```
 
+## Security
+
+See [SECURITY.md](SECURITY.md) to report a vulnerability. The project voluntarily documents its practices in [CRA-READINESS.md](CRA-READINESS.md).
+
 ## License
 
 [Apache 2.0](LICENSE)
