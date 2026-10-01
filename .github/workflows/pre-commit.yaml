@@ -29,7 +29,9 @@ jobs:
         with:
           python-version: "3.14"
           cache: pip
-          cache-dependency-path: .pre-commit-config.yaml
+          cache-dependency-path: |
+            .pre-commit-config.yaml
+            .github/requirements/pre-commit.txt
 
       - name: Cache pre-commit hook environments
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -46,7 +48,7 @@ jobs:
         # --from-ref/--to-ref scopes pre-commit to files changed between the
         # PR base and head, avoiding full-repo sweeps on every PR.
         run: |
-          pip install pre-commit
+          pip install --require-hashes -r .github/requirements/pre-commit.txt
           pre-commit run --show-diff-on-failure --color=always \
             --from-ref ${{ github.event.pull_request.base.sha }} \
             --to-ref ${{ github.event.pull_request.head.sha }}

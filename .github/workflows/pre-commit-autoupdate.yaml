@@ -20,17 +20,13 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: octo-sts/action@f603d3be9d8dd9871a265776e625a27b00effe05 # v1.1.1
-        id: octo-sts
-        with:
-          scope: ${{ github.repository }}
-          identity: pre-commit-autoupdate
-
+      # Check out and run pre-commit before any write token exists, so third-party
+      # code never runs alongside it. create-pull-request sets up its own git auth
+      # from its token input, so no credentials need to persist here.
       - name: Git checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ steps.octo-sts.outputs.token }}
-          persist-credentials: true # create-pull-request needs git credentials to push
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -39,8 +35,14 @@ jobs:
 
       - name: Run pre-commit autoupdate
         run: |
-          pip install pre-commit
+          pip install --require-hashes -r .github/requirements/pre-commit.txt
           pre-commit autoupdate --freeze
+
+      - uses: octo-sts/action@f603d3be9d8dd9871a265776e625a27b00effe05 # v1.1.1
+        id: octo-sts
+        with:
+          scope: ${{ github.repository }}
+          identity: pre-commit-autoupdate
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
