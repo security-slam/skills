@@ -9,13 +9,14 @@ The CRA badge requires implementing the CRA readiness guidelines provided by the
 
 "CRA readiness" is a voluntary transparency signal. It is not regulatory compliance. The CRA places no obligations on open source developers or volunteer maintainers merely for publishing or maintaining code. That covers almost every open source project.
 
-Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness) by Roman Zhukov (Red Hat) and Madalin Neag (Linux Foundation), and the OpenSSF [CRA Brief Guide for OSS Developers](https://best.openssf.org/CRA-Brief-Guide-for-OSS-Developers).
+Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness) by Roman Zhukov (Red Hat) and Madalin Neag (Linux Foundation), and the OpenSSF [CRA Brief Guide for OSS Developers](https://best.openssf.org/CRA-Brief-Guide-for-OSS-Developers). Recommended additions to item 1 come from the Linux Foundation [CRA Stewards Playbook](https://policy.openssf.org/CRA/stewards-playbook.html).
 
 ## Critical Rules
 
 - **Never describe the work as CRA compliance, certification, or legal assurance.** Use "CRA readiness" and "voluntary". You are not giving legal advice. Say so when the user asks legal questions and point them to the OpenSSF Global Cyber Policy channel.
 - **Always include the disclaimer** from [assets/CRA-READINESS.md](assets/CRA-READINESS.md) verbatim in the published document.
-- **Ask whether the project steward publishes its own CRA guidance** (for example CNCF, the Linux Foundation, the Eclipse Foundation, or Apache). If it does, the steward's guidance wins where it differs from this skill.
+- **Ask who the project's steward is, and whether it publishes CRA guidance.** A steward is a legal entity, not a manufacturer, that supports this specific project on a sustained basis, for example by hosting or governing it, for software intended for commercial use (CRA Article 3(14)). Individual maintainers and volunteer groups are never stewards. Many projects have none; record "none" and move on. If the steward publishes guidance (for example CNCF, the Linux Foundation, the Eclipse Foundation, or Apache), it wins where it differs from this skill.
+- **Never let CRA-READINESS.md read as an attestation.** No signed declarations, no "certified", and no statement that the project makes a downstream product compliant. The CRA Stewards Playbook rules these out even for stewards.
 - **Flag commercial context.** If the maintainers monetize the project or place it on the EU market as a product, or the steward acts as an open source steward under the CRA, tell the user real obligations may apply and that they need qualified legal advice. Continue with the readiness work only if they want to.
 - **Never change settings (MFA, branch protection) without explicit approval.**
 
@@ -46,6 +47,10 @@ For examples and drafting guidance per item, see [references/cra-readiness-items
 ### 2. Audit
 
 Report each checklist item as `Met`, `Partial`, or `Gap` with evidence. For item 1, audit each of the five points separately. Policies most often miss the end-of-life plan.
+
+Then check item 1 against the Stewards Playbook's recommended additions: scope, response time expectations, a bug bar (what counts as a vulnerability), and how users learn about fixes. See [references/cra-readiness-items.md](references/cra-readiness-items.md#recommended-additions-from-the-cra-stewards-playbook). Report each one as `Present` or `Recommended`, and never as a gap, because the Security Slam guide does not require them. They become required only when the steward is the Linux Foundation or one of its foundations.
+
+If the project has a steward, also check that SECURITY.md says how maintainers escalate an actively exploited vulnerability to the steward. The steward's own CRA duties, such as reporting through ENISA's Single Reporting Platform and designating a CSIRT, apply from December 11, 2027 and belong to the steward. Never ask maintainers to take them on.
 
 Check settings where the token allows:
 

@@ -35,6 +35,33 @@ Security fixes go to the latest minor release. Older releases are end of life.
 
 Fill every value from the maintainers. The timelines above are placeholders, not recommendations.
 
+### Recommended additions from the CRA Stewards Playbook
+
+The Linux Foundation [CRA Stewards Playbook](https://policy.openssf.org/CRA/stewards-playbook.html) lists more for a security policy. The Security Slam guide does not require these, so recommend them unless the steward is the Linux Foundation or one of its foundations, in which case they are required.
+
+- **Scope:** which repositories, artifacts, and deployments the policy covers, and what it does not cover.
+- **Response time expectations:** an honest statement. "We promise no response timeframe" counts for a volunteer project. Never push maintainers to commit to a number.
+- **Bug bar:** what counts as a vulnerability and what is a normal bug to report publicly.
+- **User notification:** where fixes are announced. Published GitHub Security Advisories reach the GitHub Advisory Database and OSV in machine-readable form.
+
+Skeleton for gaps:
+
+```markdown
+## Scope
+This policy covers the code in this repository, its release artifacts, and its
+GitHub Actions workflows. It does not cover third-party dependencies.
+
+## What Counts as a Vulnerability
+Report it privately if it could let an attacker run code, read secrets, or
+change a release. Wrong output and crashes without a security impact are bugs.
+Report them as public issues.
+
+Published advisories appear on the repository's Security tab and in the GitHub
+Advisory Database, which feeds OSV.
+```
+
+Fill the scope and bug bar from the maintainers. Do not guess what is out of scope.
+
 ## 2. Contributing Guidance
 
 CONTRIBUTING.md or a docs page. It must link explicitly to secure development practices (the policy from item 1 or a dedicated section). Examples: [PurpleBooth template](https://gist.github.com/PurpleBooth/b24679402957c63ec426), [oneDNN](https://github.com/uxlfoundation/oneDNN?tab=contributing-ov-file).
