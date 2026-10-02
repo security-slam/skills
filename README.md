@@ -3,13 +3,17 @@
 [![OSPS Baseline](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml/badge.svg)](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15132/baseline)](https://www.bestpractices.dev/projects/15132/baseline-1)
 
-A [Claude Code](https://docs.claude.com/en/docs/claude-code) plugin marketplace for earning [Security Slam](https://securityslam.com) project badges.
+[Agent Skills](https://agentskills.io) for earning [Security Slam](https://securityslam.com) project badges.
 
-The marketplace is named `security-slam`. It ships one plugin, `security-slam-skills`, with one skill per project badge and a `slam-status` skill that checks all six. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.
+The skills follow the open Agent Skills standard, so they work with any compatible agent, including Claude Code, Codex, GitHub Copilot, Cursor, and Gemini CLI. For Claude Code, this repository is also a plugin marketplace named `security-slam` that ships them as one plugin, `security-slam-skills`.
+
+There is one skill per project badge, plus a `slam-status` skill that checks all six. Each skill audits a repository against the badge requirements, reports gaps with evidence, drafts only what the maintainers confirm, and ends with a submission checklist.
 
 ## Quick start
 
-Run this in the repository you want to check:
+Install the skills, then open your agent in the repository you want to check and ask: "Where does this repo stand in the Security Slam?"
+
+Claude Code:
 
 ```bash
 claude plugin marketplace add security-slam/skills
@@ -17,7 +21,13 @@ claude plugin install security-slam-skills@security-slam
 claude "/security-slam-skills:slam-status"
 ```
 
-`slam-status` is read-only. It reports where you stand on all six badges and suggests one next step.
+Any other agent:
+
+```bash
+npx skills add security-slam/skills
+```
+
+That question runs `slam-status`, which is read-only. It reports where you stand on all six badges and suggests one next step.
 
 ## Status
 
@@ -30,18 +40,23 @@ Early preview. The skills work end to end on four repositories, and each one ear
 | [privateerproj/privateer](https://github.com/privateerproj/privateer) | A Go CLI that ships release binaries with GoReleaser | [bestpractices.dev](https://www.bestpractices.dev/projects/15145/baseline-1) |
 | [privateerproj/privateer-sdk](https://github.com/privateerproj/privateer-sdk) | A Go library that inherits its security policy and contributing guide from an org `.github` repository | [bestpractices.dev](https://www.bestpractices.dev/projects/12018/baseline-1) |
 
+Tested with Claude Code (plugin marketplace) and Codex (installed with `npx skills`). On privateer-sdk, Codex picked `slam-status` from a plain question and produced the same report as Claude Code.
+
 Not yet tested:
 
 - Projects that publish container images or registry packages.
 - OSPS Baseline Level 2 and 3 paths, such as release signing, SBOMs (software bills of materials), and release verification docs. All four repositories stopped at Level 1.
 - The prose self-assessment option of `inspector`, and its hand-off to the gemara-ai plugin.
 - Projects hosted outside GitHub.
+- Agents other than Claude Code and Codex, and every skill except `slam-status` outside Claude Code.
 
 The skills pin the specification versions listed under [Versions Targeted](#versions-targeted). When those specifications change, the skills can lag behind until a release updates them.
 
 If a skill gets something wrong on your project, please [report it](CONTRIBUTING.md#reporting-bugs).
 
 ## Install
+
+### Claude Code
 
 From inside Claude Code:
 
@@ -59,9 +74,21 @@ claude plugins install security-slam-skills@security-slam
 
 To try a local checkout, pass the directory path in place of `security-slam/skills`.
 
+### Other agents
+
+[`skills`](https://github.com/vercel-labs/skills) installs Agent Skills into most compatible agents:
+
+```bash
+npx skills add security-slam/skills
+```
+
+It asks which agents to install into. Add `--agent <name>` to pick one, `--skill <name>` to install a single skill, or `--global` to install for your user instead of the current project. The installer sends anonymous usage data by default. Set `DO_NOT_TRACK=1` to turn that off.
+
+You can also copy the folders under [`security-slam-skills/skills/`](security-slam-skills/skills) into your agent's skills directory.
+
 ## Skills
 
-Not sure where a project stands? Run `/slam-status` first. Otherwise start with Cleaner. Every other badge adds links to the Security Insights file it creates.
+Not sure where a project stands? Run `slam-status` first. Otherwise start with Cleaner. Every other badge adds links to the Security Insights file it creates.
 
 | Skill | Badge requirement |
 | --- | --- |
@@ -73,7 +100,7 @@ Not sure where a project stands? Run `/slam-status` first. Otherwise start with 
 | `cra` | Implement voluntary EU Cyber Resilience Act (CRA) readiness practices and publish a readiness checklist with a disclaimer. |
 | `slam-status` | Check a repo against all six badges at once and recommend which one to work on next. Read-only. |
 
-Claude picks a skill when your request matches it. You can also call one by name, for example `/cleaner`.
+Your agent picks a skill when your request matches its description. You can also ask for one by name, for example "use the cleaner skill". In Claude Code, `/cleaner` works too.
 
 The individual recognitions (Security Advocate, Security Champion, Advisor) go to people, not projects, so they have no skills.
 
@@ -89,13 +116,22 @@ The `inspector` skill hands Gemara authoring to the [gemara-ai](https://github.c
 
 ## Update
 
+Claude Code:
+
 ```bash
 claude plugins marketplace update security-slam
+claude plugins update security-slam-skills@security-slam
+```
+
+Other agents:
+
+```bash
+npx skills update
 ```
 
 ## Releasing
 
-Claude Code caches plugins by version, so users only receive changes that come with a version bump.
+Claude Code caches plugins by version, so Claude Code users only receive changes that come with a version bump. `npx skills` installs from the repository, so its users get the latest `main`.
 
 - Any PR that changes `security-slam-skills/` or `.claude-plugin/marketplace.json` must bump `version` in `security-slam-skills/.claude-plugin/plugin.json` and `metadata.version` in `.claude-plugin/marketplace.json` to the same value. The `version-check` workflow enforces this.
 - The auto-labeler adds the `release` label to those PRs, and merging one publishes a release automatically.
@@ -103,9 +139,17 @@ Claude Code caches plugins by version, so users only receive changes that come w
 
 ## Uninstall
 
+Claude Code:
+
 ```bash
 claude plugins uninstall security-slam-skills@security-slam
 claude plugins marketplace remove security-slam
+```
+
+Other agents:
+
+```bash
+npx skills remove cleaner chronicler inspector mechanizer defender cra slam-status
 ```
 
 ## Security

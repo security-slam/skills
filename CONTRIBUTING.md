@@ -6,9 +6,9 @@
 
 Open a [GitHub issue](https://github.com/security-slam/skills/issues/new) and include:
 
-- The `security-slam-skills` plugin version, from `claude plugins list`.
-- Your Claude Code version, from `claude --version`.
-- The skill you invoked, for example `/cleaner`.
+- The agent you used and its version, for example Claude Code from `claude --version` or Codex from `codex --version`.
+- How you installed the skills: the Claude Code plugin (with its version from `claude plugins list`) or `npx skills`.
+- The skill you invoked, for example `cleaner`.
 - The repository the skill ran against, if it is public.
 - What you expected the skill to produce, and what it produced instead.
 
