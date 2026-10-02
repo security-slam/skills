@@ -1,4 +1,4 @@
-# security-slam/skills
+# Security Slam Agent Skills
 
 [![OSPS Baseline](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml/badge.svg)](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15132/baseline)](https://www.bestpractices.dev/projects/15132/baseline-1)
