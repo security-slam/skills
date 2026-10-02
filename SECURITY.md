@@ -1,10 +1,26 @@
 # Security Policy
 
+## Scope
+
+This policy covers the skills and plugin files in this repository (`security-slam-skills/` and `.claude-plugin/`) and its GitHub Actions workflows. It does not cover the tools the skills call (`gh`, `cue`, `git`), the AI agent that runs them, or the projects the skills are run against.
+
 ## Reporting a Vulnerability
 
 Report vulnerabilities privately through [GitHub private vulnerability reporting](https://github.com/security-slam/skills/security/advisories/new).
 
 Do not open a public issue, pull request, or discussion for a vulnerability.
+
+## What Counts as a Vulnerability
+
+Report it privately if a skill or workflow could:
+
+- run commands or change repository settings the user did not approve, including through prompt injection from the content of a repository the skill reads,
+- leak tokens, secrets, or private repository data,
+- or let an attacker change what the skills or a release contain.
+
+A skill giving wrong or incomplete security advice is a bug, not a vulnerability. Report it as a [public issue](CONTRIBUTING.md#reporting-bugs).
+
+Published advisories appear on the repository's Security tab and in the GitHub Advisory Database, which feeds OSV.
 
 ## Security Contact
 
