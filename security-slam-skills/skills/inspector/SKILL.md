@@ -18,6 +18,11 @@ Source: [securityslam.com/library/inspector](https://securityslam.com/library/in
 - **Ground every capability and threat in the code.** Cite the file, endpoint, or config that exposes it. Never pad the catalog with generic threats that do not apply.
 - **The maintainer owns the conclusions.** You draft. A maintainer reviews every threat and every "out of scope" decision before it ships.
 - **Contributors can help without full context.** If the user is not a maintainer, produce a scaffold or first draft and label it as such.
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before scoping, run the OSPS Baseline scanner as [the scanner reference](../mechanizer/references/local-scan.md) describes. The scanner does not evaluate the SA-03 assessment controls, so the run does not grade this badge, but its messages feed the attack surface map in step 1: OSPS-BR-01.03 names the workflows that run in a privileged context, OSPS-QA-02.01 says which dependency manifests GitHub sees, and OSPS-QA-05 reports binary artifacts in the repository.
 
 ## Workflow
 

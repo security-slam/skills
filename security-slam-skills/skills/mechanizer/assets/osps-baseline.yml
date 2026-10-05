@@ -1,4 +1,4 @@
-# OSPS Baseline evaluation for the Security Slam Mechanizer badge.
+# OSPS Baseline evaluation for the Security Slam Mechanizer badge (Option 1: the scanner action).
 # Replace every RESOLVE_SHA / RESOLVE_TAG pair with the latest release tag and
 # its full commit SHA from the GitHub API before committing. Never use mutable tags.
 name: OSPS Baseline

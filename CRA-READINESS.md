@@ -1,7 +1,7 @@
 # CRA Readiness
 
 This project voluntarily documents its security practices using the Security Slam
-[CRA Readiness checklist](https://securityslam.com/library/cra-readiness), aligned
+[CRA Readiness checklist](https://securityslam.com/library/cra-readiness-guide), aligned
 with the EU [Cyber Resilience Act](https://openssf.org/public-policy/eu-cyber-resilience-act/).
 
 ## Disclaimer

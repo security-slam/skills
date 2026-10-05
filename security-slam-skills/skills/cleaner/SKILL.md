@@ -17,6 +17,11 @@ Source: [securityslam.com/library/cleaner](https://securityslam.com/library/clea
 - **Never invent contacts.** Take names and emails from existing files (MAINTAINERS, CODEOWNERS, SECURITY.md, GOVERNANCE.md). Ask the user for anything missing.
 - **Reuse an existing file.** If the repo already has a Security Insights file, update it in place. Never create a second one.
 - **Always validate before declaring done.**
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before the audit, run the OSPS Baseline scanner as [the scanner reference](../mechanizer/references/local-scan.md) describes. Five Level 1 controls read the Security Insights file directly (OSPS-DO-01.01, DO-02.01, GV-03.01, QA-04.01, and VM-02.01), and each failing message names the field the scanner looked for. Those fields are the first rows of the table in step 3, and the scan is the check that the file written in step 4 says what the scanner needs.
 
 ## Workflow
 
@@ -30,7 +35,7 @@ find . -maxdepth 2 -iname 'security-insights.y*ml' -not -path './node_modules/*'
 
 If one exists, read it and note its `header.schema-version`. A `schema-version` of `1.x.x` is the retired v1 format. Tell the user and migrate it to v2 in step 4.
 
-If none exists, create `SECURITY-INSIGHTS.yml` at the repository root. That is the name and location the Slam instructions use. The upstream spec also accepts `security-insights.yml` in the root or in `.github/`. Keep whatever convention the project's other tooling already expects.
+If none exists, create `security-insights.yml` at the repository root. That is the name and location the Slam instructions use. The upstream spec also accepts `.github/security-insights.yml`, and the `find` above matches other casings such as `SECURITY-INSIGHTS.yml`. Keep whatever name an existing file or the project's other tooling already uses.
 
 ### 2. Gather evidence
 
@@ -108,9 +113,9 @@ security:
 Validate against the CUE schema that matches `header.schema-version`. The spec does not publish a CUE module, so download the schema file for that tag:
 
 ```bash
-v=$(yq '.header.schema-version' SECURITY-INSIGHTS.yml)
+v=$(yq '.header.schema-version' security-insights.yml)
 curl -sfL "https://raw.githubusercontent.com/ossf/security-insights/v${v}/spec/schema.cue" -o /tmp/si-schema.cue
-cue vet -d '#SecurityInsights' /tmp/si-schema.cue SECURITY-INSIGHTS.yml
+cue vet -d '#SecurityInsights' /tmp/si-schema.cue security-insights.yml
 ```
 
 If `cue` is missing, install it with `go install cuelang.org/go/cmd/cue@latest` or `brew install cue-lang/tap/cue`. Silent output means the file is valid.
@@ -118,7 +123,7 @@ If `cue` is missing, install it with `go install cuelang.org/go/cmd/cue@latest` 
 Then check every URL in the file resolves:
 
 ```bash
-grep -oE 'https://[^ "]+' SECURITY-INSIGHTS.yml | sort -u | while read -r u; do
+grep -oE 'https://[^ "]+' security-insights.yml | sort -u | while read -r u; do
   code=$(curl -s -o /dev/null -w '%{http_code}' -L "$u"); echo "$code $u"; done
 ```
 
@@ -132,7 +137,7 @@ Offer to add the [Security Insights Action](https://github.com/revanite-io/secur
 
 ### 7. Submission checklist
 
-Give the user this checklist:
+Suggest the [Security Insights Editor](https://security-insights.openssf.org/editor/) for the maintainer's review: it loads the generated file and validates it section by section. Then give the user this checklist:
 
 - [ ] Security Insights file committed on the default branch
 - [ ] `cue vet` passes

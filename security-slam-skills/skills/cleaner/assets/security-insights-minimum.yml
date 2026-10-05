@@ -4,7 +4,7 @@ header:
   schema-version: 2.2.0
   last-updated: 'YYYY-MM-DD'
   last-reviewed: 'YYYY-MM-DD'
-  url: https://github.com/OWNER/REPO/raw/main/SECURITY-INSIGHTS.yml
+  url: https://github.com/OWNER/REPO/raw/main/security-insights.yml
 
 project:
   name: PROJECT_NAME

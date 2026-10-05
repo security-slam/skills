@@ -1,6 +1,6 @@
 # Documentation Controls: Drafting Guide
 
-Control text comes from the [OSPS Baseline 2026-08-28](https://baseline.openssf.org/versions/2026-08-28#documentation). The drafting notes are practical guidance, not normative text.
+Control text comes from the [OSPS Baseline 2026-08-28](https://baseline.openssf.org/versions/2026-08-28). The drafting notes are practical guidance, not normative text. Where a section names a template, draft from the OpenSSF OSPS Templates as [osps-templates.md](osps-templates.md) describes.
 
 ## OSPS-DO-01.01 User Guides (Level 1)
 
@@ -86,6 +86,71 @@ Only the latest minor release of each supported major version receives fixes.
 
 A rolling statement is also valid: "Only the most recent release receives security fixes."
 
-## Beyond DO: Other Documentation Controls
+## OSPS-GV-03.01 and 03.02 Contribution Process and Requirements (Levels 1 and 2)
 
-Other Baseline families also require documentation, for example GV-03.01 (contribution process), VM-02.01 (security contacts), and SA-01.01 (design docs). The Chronicler badge targets the DO family. The `defender` skill covers the rest.
+> The project documentation MUST include an explanation of the contribution process, or clearly state that public contributions are not accepted
+>
+> The project documentation MUST include a guide for code contributors that includes requirements for acceptable contributions.
+
+GV-03.01 is the process: fork or branch, open a pull request, what review looks like. GV-03.02 adds the bar a contribution has to clear: tests, sign-off or DCO, commit message style, which changes need a design discussion first. A project that accepts no public contributions meets GV-03.01 by saying so.
+
+## OSPS-VM-02.01 Security Contacts (Level 1)
+
+> The project documentation MUST contain security contacts.
+
+Name the contact in SECURITY.md: an email alias, a GitHub private vulnerability reporting link, or named maintainers. Mirror it in `project.vulnerability-reporting.contact`. Section 2 of the CVD Policy template is a one-line placeholder; fill it with real contacts.
+
+## OSPS-GV-01.01 and 01.02 Members and Roles (Level 2)
+
+> The project documentation MUST include a list of project members with access to sensitive resources.
+>
+> The project documentation MUST include descriptions of the roles and responsibilities for members of the project
+
+A MAINTAINERS.md with GitHub handles and roles covers both. Say which role holds admin, release, and secrets access. Keep the list the project will actually update; a stale list fails the spirit of the control.
+
+Example:
+
+```markdown
+## Maintainers
+
+| Name | GitHub | Role |
+| --- | --- | --- |
+| Ada Example | @ada | Maintainer: merge, release, repository admin |
+| Bo Example | @bo | Reviewer: approve pull requests |
+
+Maintainers hold admin access to the repository and the release secrets. Reviewers can approve but not merge.
+```
+
+## OSPS-VM-01.01 and 03.01 CVD Policy and Private Reporting (Level 2)
+
+> The project documentation MUST include a policy for coordinated vulnerability disclosure (CVD), with a clear timeframe for response.
+>
+> The project documentation MUST provide a means for private vulnerability reporting directly to the security contacts within the project.
+
+Draft from the CVD Policy template. The timeframe is the part most existing SECURITY.md files lack: acknowledgement, initial assessment, and disclosure windows, each a number the maintainers chose. "We promise no response timeframe" is honest but does not satisfy VM-01.01; ask the maintainers for a window they can keep. For the private channel, GitHub private vulnerability reporting (`gh api repos/OWNER/REPO/private-vulnerability-reporting --jq .enabled`) or a private email both qualify; the doc has to point at it.
+
+## OSPS-VM-04.01 Published Vulnerability Data (Level 2)
+
+> The project documentation MUST publicly publish data about discovered vulnerabilities.
+
+Say in SECURITY.md where fixed vulnerabilities are announced. Published GitHub Security Advisories satisfy this and reach the GitHub Advisory Database and OSV in machine-readable form. A project with no advisories yet still states where they will appear.
+
+## OSPS-GV-04.01 Review Before Escalated Permissions (Level 3)
+
+> The project documentation MUST have a policy that code collaborators are reviewed prior to granting escalated permissions to sensitive resources.
+
+Draft from the Escalated Permissions Review Policy template. Fill the contribution threshold, who nominates, how identity is checked, and the review cadence from the maintainers.
+
+## OSPS-VM-05.01, 05.02, and 06.01 SCA and SAST Policies (Level 3)
+
+> The project documentation MUST include a policy that defines a threshold for remediation of SCA findings related to vulnerabilities and licenses.
+>
+> The project documentation MUST include a policy to address SCA violations prior to any release.
+>
+> The project documentation MUST include a policy that defines a threshold for remediation of SAST findings.
+
+Draft from the SCA Policy and SAST Policy templates. Name the tool the project really runs (Dependabot, OSV-Scanner, CodeQL, Semgrep) and remediation windows per severity the maintainers will hold to. The matching enforcement controls, VM-05.03 and VM-06.02, need a merge-blocking check in CI; route them to the `defender` skill.
+
+## Beyond Chronicler
+
+Other families also require documentation, for example SA-01.01 (design docs), SA-02.01 (external interfaces), QA-06.02 and 06.03 (test docs and policy), and BR-07.02 (secrets policy). The `defender` skill covers them, drafting QA-06.03 and BR-07.02 from the Test Coverage and Secrets and Credentials Management templates.

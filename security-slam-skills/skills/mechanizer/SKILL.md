@@ -1,41 +1,46 @@
 ---
 name: mechanizer
-description: Earn the Security Slam Mechanizer badge by automating OSPS Baseline evaluation and publishing the results, through either LFX Insights (100% on Security and Best Practices) or the OSPS Baseline GitHub Action (zero failed controls). Use when the user mentions the Mechanizer badge, Security Slam, automated baseline evaluation, OSPS Baseline scanner, pvtr-github-repo-scanner, Privateer, osps-baseline-action, or LFX Insights security score. Sets up the scan, triages failures, and records the tooling in Security Insights.
+description: Earn the Security Slam Mechanizer badge by wiring a live, recurring OSPS Baseline scan into the default branch, as either the OSPS Baseline GitHub Action or the grc.store publish workflow (pvtr-publish-results), and recording the tooling in Security Insights. Use when the user mentions the Mechanizer badge, Security Slam, automated baseline evaluation, OSPS Baseline scanner, pvtr-github-repo-scanner, Privateer, osps-baseline-action, pvtr-publish-results, grc.store, grc.store namespaces or trusted publishers, or publishing Baseline results. Sets up the scan, walks through the grc.store prerequisites without performing them, and triages failures as a head start on Defender.
 ---
 
 # Mechanizer Badge
 
-The Mechanizer badge requires automated OSPS Baseline evaluation with published results. Two paths qualify:
+The Mechanizer badge requires a live, recurring OSPS (Open Source Project Security) Baseline scan wired into the default branch and recorded in Security Insights. A passing score is not required. Two options qualify, and both run the same scanner, the OpenSSF-maintained [pvtr-github-repo-scanner](https://github.com/ossf/pvtr-github-repo-scanner) plugin for [Privateer](https://privateerproj.com):
 
-- **Option 1: LFX Insights (recommended by the Slam).** Reach 100% on the project's Security & Best Practices dashboard. LFX Insights curates a subset of controls. Onboarding takes longer, but 100% is easier once the project is in.
-- **Option 2: OSPS Baseline GitHub Action.** Reach zero failed controls. It checks every control the scanner can verify automatically. It starts faster but demands more.
+- **Option 1: OSPS Baseline GitHub Action.** Results stay in the repository, as a workflow artifact, in the job log, or in the Security tab. The fastest start, with no rate limits, and it can run on same-repository pull requests.
+- **Option 2: grc.store publish workflow.** The [pvtr-publish-results](https://github.com/revanite-io/pvtr-publish-results) reusable workflow runs the scan and publishes each signed result to a public target page on [grc.store](https://grc.store). It needs a grc.store namespace and a trusted-publisher binding first. The Defender badge requires this option, so steer anyone planning to go for Defender here.
 
-Both use the same scanner ([Privateer](https://privateerproj.com) with the [pvtr-github-repo-scanner](https://github.com/ossf/pvtr-github-repo-scanner) plugin).
-
-Source: [securityslam.com/library/mechanizer](https://securityslam.com/library/mechanizer).
+Source: [securityslam.com/library/mechanizer](https://securityslam.com/library/mechanizer) and [Set up your grc.store namespace and targets](https://securityslam.com/library/grc-store-setup).
 
 ## Critical Rules
 
-- **Never weaken a check to reach green.** Fix the underlying control or leave it failing and explain why.
+- **Never weaken a check to reach green.** Fix the underlying control or leave it failing and explain why. A failing scan still earns Mechanizer; a passing one is the `defender` skill's job.
 - **Never change repository or org settings without explicit approval.** Branch protection, MFA enforcement, and default workflow permissions are outward-facing changes. Show the exact change and wait for a yes.
-- **Pin every action to a full commit SHA** with a version comment. Resolve SHAs from the GitHub API at generation time. Never guess or reuse a SHA from memory.
-- **Keep scanner tokens away from untrusted code.** Never run the scan on `pull_request_target` or on fork PRs.
+- **Pin every action to a full commit SHA** with a version comment. Resolve SHAs from the GitHub API at generation time. Never guess or reuse a SHA from memory. **One exception:** call the publish workflow by tag, `publish.yml@v1`. The hub accepts a result only when the Sigstore certificate names that exact tag; a SHA-pinned call puts the SHA in the certificate and the hub's identity check fails. Say so in a comment on the `uses:` line and add `# zizmor: ignore[unpinned-uses]` so a linter does not "fix" it.
+- **Never trigger the publish workflow on pull requests.** Pushes to the default branch, releases, or a schedule only. The hub stores one log per target and catalog every ten minutes and rejects the rest with `rate_limited`.
+- **Never guess the grc.store namespace.** Ask for the slug and check it exists.
+- **Never perform grc.store setup.** Enterprise access, namespaces, and trusted-publisher bindings are created in the grc.store UI by an enterprise or namespace admin. Instruct, then ask the user to confirm. The hub cannot tell a user who their enterprise admins are, and neither can you.
+- **Keep scanner tokens away from untrusted code.** Never run a scan on `pull_request_target` or on fork PRs.
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before choosing an option, run the OSPS Baseline scanner locally as [the scanner reference](../mechanizer/references/local-scan.md) describes. It is the same `openssf/github-repo` plugin both CI options run, so the local table in step 2 is what the first CI run will report, minus the settings a repository-scoped job token cannot read.
 
 ## Workflow
 
-### 1. Choose the path
+### 1. Choose the option
 
-Check LFX Insights first:
+Ask two questions:
 
-- Search [insights.linuxfoundation.org](https://insights.linuxfoundation.org/) for the project.
-- If it is listed, open its Security & Best Practices page and note the score and failing checks. Prefer Option 1.
-- If it is not listed, tell the user onboarding goes through a [project onboarding discussion](https://github.com/linuxfoundation/insights/discussions/categories/project-onboardings) and depends on community upvotes. Offer Option 2 in the meantime. Doing both is fine.
+1. **Is Defender a goal?** If yes, go for Option 2: Defender is judged from the grc.store result, so starting there saves a step.
+2. **Is the maintainer in a grc.store enterprise?** Their steward's (a foundation) or their employer's. If they do not know, *My namespaces* on grc.store shows which enterprise manages their account. Without one, point them to the Slam organizers for onboarding, then keep going: Option 1 earns the badge today, and the Option 2 workflow, config, and Security Insights entry can be drafted now and committed once the account, namespace, and binding exist.
 
 For a project not hosted on GitHub, tell the user to contact Slam organizers for an alternate evaluation path.
 
 ### 2. Run a local baseline scan
 
-Get the current picture before touching CI. Follow the [pvtr-github-repo-scanner README](https://github.com/ossf/pvtr-github-repo-scanner) to run it locally against the repo with a read-only token. Summarize the results:
+Summarize the results of the local run from [Scan First](#scan-first), one table per repository:
 
 | Control | Result | Cause | Fix |
 | --- | --- | --- | --- |
@@ -52,11 +57,11 @@ Two failures are common on new projects:
 | OSPS-BR-07.01 | Secret scanning and push protection are both disabled | Turn both on in repository settings. They are free for public repositories. This is a settings change, so get approval first. |
 | OSPS-DO-01.01 | User guide was NOT specified in Security Insights data | Set `project.documentation.detailed-guide`. The scanner reads only that field; `quickstart-guide` alone fails. |
 
-### 3. Fix failures
+### 3. Triage failures (a head start on Defender)
 
-Work through the table with the user. For each settings change, show the exact `gh api` call or UI steps and wait for approval. Re-scan after each batch.
+Mechanizer does not require any of these fixed. Work through the table with the user anyway, because every fix here is one less for the `defender` skill. For each settings change, show the exact `gh api` call or UI steps and wait for approval. Re-scan after each batch.
 
-### 4. Add the CI workflow (Option 2)
+### 4. Option 1: add the action workflow
 
 Create `.github/workflows/osps-baseline.yml` from [assets/osps-baseline.yml](assets/osps-baseline.yml). Before writing it:
 
@@ -70,7 +75,7 @@ Create `.github/workflows/osps-baseline.yml` from [assets/osps-baseline.yml](ass
    Repeat for `actions/checkout` and `actions/upload-artifact`.
 
 2. Always set `catalog` explicitly to a Baseline catalog the pinned scanner release ships. Never rely on the default: the action's README and its `action.yml` have named different defaults.
-3. Choose the scanner token. The built-in `GITHUB_TOKEN` does not work. Offer these in order:
+3. Choose the scanner token. The action's README says the built-in `GITHUB_TOKEN` does not work. In Option 2 the same scanner accepted the job token and reported the settings it could not read as "Needs Review", so try `${{ github.token }}` first, and move to these options, in order, when controls the token should be able to read come back "Needs Review":
    1. **octo-sts**, when the org has the [octo-sts](https://github.com/octo-sts/app) GitHub App installed. The workflow trades its OIDC identity for a short-lived, read-only token. No secret is stored. See [references/octo-sts-token.md](references/octo-sts-token.md).
    2. **A fine-grained PAT** limited to this repository with read-only access. Store it as the `PVTR_GITHUB_TOKEN` secret.
    3. **A classic PAT** with `public_repo` (or `repo` for private repos), stored the same way. Use it only as a fallback: `public_repo` also grants write access to every public repository the user can push to.
@@ -98,28 +103,64 @@ on:
 
 The action assesses Maturity Level 1 only. That is expected and still satisfies the badge.
 
-### 5. Publish results
+Keep the workflow on a schedule so results stay fresh, and upload results as an artifact. Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab, with osps-baseline-action v1.5.2 or later: through v1.5.1, `fail-on-error: "true"` exited before the SARIF upload, so failed controls reached only the workflow log and the results artifact. Add a status badge for the workflow to the README.
 
-- Keep the workflow on a schedule so results stay fresh, and upload results as an artifact.
-- Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab. Use osps-baseline-action v1.5.2 or later. Through v1.5.1, `fail-on-error: "true"` exited before the SARIF upload, so failed controls reached only the workflow log and the results artifact (`pvtr/pvtr.sarif`). v1.5.1 also showed two-digit counts wrong in the workflow summary.
-- Add a status badge for the workflow to the README.
+### 5. Option 2: add the publish workflow
+
+#### Prerequisites you instruct, never perform
+
+| Prerequisite | Who does it | What you do |
+| --- | --- | --- |
+| An account inside the steward's enterprise | An enterprise admin invites the maintainer, or the maintainer requests access through the enterprise's `https://grc.store/request-access?via=<enterprise>` link | Ask whether the maintainer has one. If not, point at the Slam organizers for onboarding and carry on drafting. |
+| An enterprise-owned namespace for the project | An enterprise admin creates it with the enterprise under *Owned by*; a member asks an admin | Ask for the slug and check it: `curl -sf https://hub.grc.store/v1/namespaces/SLUG` (404 means it does not exist). Warn when the namespace is personal rather than enterprise-owned: the badge evidence then belongs to one person, and a hub admin has to move it into the enterprise on request. |
+| The repository bound as a trusted publisher on that namespace | A namespace admin adds `owner/repo` under *Trusted publishers*, optionally restricted to a ref | State the exact binding: `OWNER/REPO`, with ref `refs/heads/main` when the workflow only runs from the default branch. Ask the user to confirm it exists before the workflow is committed. The public API exposes no binding listing; the check is "the first run succeeds". |
+| The target registered and verified | The first successful publish run does it. Nothing manual for a GitHub repository | Tell the user the page to expect, `https://grc.store/targets/NAMESPACE/TARGET`, and check it resolves after the first run. Non-GitHub targets (manual registration plus a DNS or hosted-file challenge) are out of scope: say so and point at the organizers. |
+| Target coordinate and license | The maintainer | Derive `NAMESPACE/TARGET@VERSION` from the namespace, the repository name, and the current release tag. Ask for the SPDX license the result is published under; suggest `CC0-1.0`. |
+
+#### Write the workflow
+
+Create `.github/workflows/publish-results.yml` from [assets/publish-results.yml](assets/publish-results.yml) and fill in the namespace, target, owner, repo, license, and level. Points to get right:
+
+- **The scanner token goes inline.** The plugin, published on the hub as `openssf/github-repo`, reads its token only from its config `vars`, so the config is passed through `secrets.config` with `${{ secrets.GITHUB_TOKEN }}` rather than a committed `.pvtr/config.yml`, which could not carry it. The job token is read-only and scoped to the repository. Settings it cannot read (org MFA, some admin settings) report "Needs Review"; that is expected and does not block the badge. This worked on [revanite-io/pvtr-aws-s3](https://github.com/revanite-io/pvtr-aws-s3/blob/main/.github/workflows/publish-results.yaml) on 2026-10-04. octo-sts support is tracked in revanite-io/pvtr-publish-results#10.
+- **`applicability` is the Baseline level the hub judges:** `maturity-1`, `maturity-2`, or `maturity-3`. Confirm it with the user; use `maturity-1` when unknown. The `defender` skill reads the published result at this level.
+- **Triggers:** push to the default branch, a weekly schedule, and manual dispatch in the asset. Every push is another run, which is what the Defender loop wants. A release trigger is also allowed, but a release usually follows a push inside the ten-minute window, so use one or the other.
+- **Version:** the `version` job reads the latest release tag and falls back to `0.0.0` for a project with no releases.
+
+#### First run
+
+```bash
+gh workflow run publish-results.yml
+gh run watch
+curl -sf https://hub.grc.store/v1/targets/NAMESPACE/TARGET | jq '.versions[0].latest | {result, counts, run_at}'
+```
+
+The `publish` job's status reports publication, not the evaluation: a failing Baseline is an honest result and still exits 0. Read the verdict from the target page. When the job itself fails, map the error to its cause:
+
+| Publish job error | Cause | Fix |
+| --- | --- | --- |
+| `forbidden`: bundle sync requires a write role or ownership of the target namespace | No trusted-publisher binding for this repository and ref, or the namespace does not exist | The namespace and binding rows above |
+| `target_not_owned` or `results_caller_mismatch` | The `target:` namespace is not one this repository is bound to, or the run came from a ref the binding excludes | Fix `target:`, or the binding's ref |
+| `rate_limited` | A second log for this target within ten minutes | Wait, and remove any pull-request trigger |
+| `results_signer_untrusted` | The workflow was called by SHA or by a tag the hub does not accept | Call `publish.yml@v1` |
+| The `run` job fails before publishing | The scanner aborted, usually a token or API problem | Read the run job log and re-run once |
 
 ### 6. Record the tooling in Security Insights
 
-Add a `repository.security.tools` entry for the scanner. The `cleaner` skill's [field reference](../cleaner/references/security-insights-fields.md) has a complete example. Re-validate the file.
+Add a `repository.security.tools` entry for the scanner. The `cleaner` skill's [field reference](../cleaner/references/security-insights-fields.md) has both shapes: for Option 1, `results.ci.location` is the workflow URL; for Option 2 it is the grc.store target page and `predicate-uri` is the publish workflow. Re-validate the file.
 
 ### 7. Submission checklist
 
-- [ ] LFX Insights shows 100% Security & Best Practices, **or** the latest scheduled scan shows zero failed controls
-- [ ] Workflow pinned by SHA and running on a schedule
-- [ ] Results published (artifact, Security tab, or LFX dashboard link)
-- [ ] Security Insights lists the scanner and validates
+- [ ] A workflow on the default branch runs the scan on push, release, or schedule
+- [ ] At least one completed run: a workflow run (Option 1) or a log on the grc.store target page (Option 2)
+- [ ] Actions pinned by SHA; the publish workflow called by tag (Option 2)
+- [ ] Security Insights lists the scanner with the right `location` and validates
 - [ ] Completion notification submitted on the Mechanizer badge page
 
 ## Edge Cases
 
 - **Scanner flakes on API errors:** re-run once. If it keeps failing, check token scope and rate limits before blaming the repo.
 - **Control fails because the scanner is behind the Baseline version:** note the version gap in the submission and ask a Slam advisor. Do not fake compliance.
-- **Org-level controls (MFA):** the MFA check runs only when the token has `admin:org`. A repository-scoped octo-sts token or fine-grained PAT does not, so expect AC-01.01 to report "needs review". Ask the user whether an org admin will run that scan. Never request broader scopes than needed.
-- **Multi-repo project:** add the workflow to every repository listed in Security Insights, or run it centrally with a matrix over the repos.
-- **Alternative tooling:** OpenSSF [Minder](https://mindersec.dev/) publishes Baseline Level 1 rules and can auto-remediate some checks. It helps close gaps but does not replace the badge's scoring paths.
+- **Org-level controls (MFA):** the MFA check runs only with an org-scoped token. A repository-scoped token (octo-sts, a fine-grained PAT, or the job token in Option 2) reports AC-01.01 as "Needs Review". Ask the user whether an org admin will run that scan. Never request broader scopes than needed.
+- **Multi-repo project:** add the workflow to every repository listed in Security Insights. For Option 2, each repository is bound separately and publishes its own target.
+- **Personal namespace:** the workflow runs, but the evidence belongs to one person's account. Say so, and point at the hub-admin transfer path in the grc.store setup guide.
+- **Alternative tooling:** OpenSSF [Minder](https://mindersec.dev/) publishes Baseline Level 1 rules and can auto-remediate some checks. It helps close gaps but does not replace the two options.

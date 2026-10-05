@@ -28,7 +28,7 @@ Practical checks for GitHub-hosted projects, grouped by Baseline family. Replace
 
 ## DO: Documentation
 
-See the `chronicler` skill.
+See the `chronicler` skill, which also drafts the documentation-shaped GV and VM controls below (GV-01, GV-03, GV-04, VM-01, VM-02, VM-03, VM-04.01, VM-05.01, VM-05.02, VM-06.01). The checks here confirm the documents exist.
 
 ## GV: Governance
 
