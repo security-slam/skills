@@ -1,7 +1,7 @@
 # Publishes the OSPS Baseline results for this repository to grc.store, for the
 # Mechanizer and Defender badges. Written from the mechanizer skill's
 # assets/publish-results.yml. Publishes only once security-slam/skills is bound
-# as a trusted publisher on the security-slam namespace.
+# as a trusted publisher on the eddie-knight namespace.
 name: Publish OSPS Baseline results to grc.store
 
 on:
@@ -51,7 +51,7 @@ jobs:
     # workflow ref to this exact tag and rejects a SHA-pinned call.
     uses: revanite-io/pvtr-publish-results/.github/workflows/publish.yml@v1 # zizmor: ignore[unpinned-uses] the hub requires the tag
     with:
-      target: security-slam/skills@${{ needs.version.outputs.version }}
+      target: eddie-knight/skills@${{ needs.version.outputs.version }}
       license: CC0-1.0 # SPDX expression the result is published under
       dry-run: ${{ inputs.dry-run == true }}
     secrets:

@@ -35,7 +35,7 @@ Early preview. The Spring 2026 versions of the skills ran end to end on four rep
 
 | Repository | What it is | Baseline scan | grc.store target |
 | --- | --- | --- | --- |
-| [security-slam/skills](https://github.com/security-slam/skills) | This repository: Markdown and YAML, released on each plugin change | [Scanner action](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml) | Pending: [`publish-results.yaml`](.github/workflows/publish-results.yaml) publishes to `security-slam/skills` once the namespace and trusted-publisher binding exist |
+| [security-slam/skills](https://github.com/security-slam/skills) | This repository: Markdown and YAML, released on each plugin change | [Scanner action](https://github.com/security-slam/skills/actions/workflows/osps-baseline.yaml) | Pending first run: [`publish-results.yaml`](.github/workflows/publish-results.yaml) publishes to `eddie-knight/skills`, a personal namespace bound to this repository |
 | [security-slam/website](https://github.com/security-slam/website) | A TypeScript site with npm dependencies, deployed and released on every merge, with existing Gemara catalogs | [Scanner action](https://github.com/security-slam/website/actions/workflows/osps-baseline.yaml) | Not yet |
 | [privateerproj/privateer](https://github.com/privateerproj/privateer) | A Go CLI that ships release binaries with GoReleaser | Scanner action | Not yet |
 | [privateerproj/privateer-sdk](https://github.com/privateerproj/privateer-sdk) | A Go library that inherits its security policy and contributing guide from an org `.github` repository | Scanner action | Not yet |
