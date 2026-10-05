@@ -42,10 +42,10 @@ Check each badge in this order. Record a status and the evidence (a path, URL, o
 | Badge | Quick check | Evidence found when |
 | --- | --- | --- |
 | Cleaner | `find . -maxdepth 2 -iname 'security-insights.y*ml'` | The file exists, declares `schema-version` 2.x, and passes `cue vet` (see the `cleaner` skill). If `cue` is missing, report the file as "present, not validated". |
-| Chronicler | Look for user guides and a defect reporting guide (README, CONTRIBUTING.md, docs). A section counts as a defect reporting guide when it tells people how to file a bug, whatever its heading says ("Reporting Bugs", "Issue Report Process", "Filing Issues"). | Both Level 1 docs exist. Higher levels need the maturity level, so report "Level 1 only checked" unless the user gave a level. |
+| Chronicler | Look for user guides, a defect reporting guide, a contribution process, and security contacts (README, CONTRIBUTING.md, SECURITY.md, docs). A section counts as a defect reporting guide when it tells people how to file a bug, whatever its heading says ("Reporting Bugs", "Issue Report Process", "Filing Issues"). | All four Level 1 docs exist. Higher levels need the maturity level, so report "Level 1 only checked" unless the user gave a level. |
 | Inspector | Look for a Gemara threat catalog or a self-assessment document, and for `repository.security.assessments.self.evidence` in the Security Insights file. | An assessment document exists and the Security Insights file links it. |
-| Mechanizer | `grep -rl 'osps-baseline-action' .github/workflows`, and check the project on [LFX Insights](https://insights.linuxfoundation.org/). | A scheduled Baseline scan workflow exists, or the project is on LFX Insights. Report the latest run result if you can read it. |
-| Defender | Search the README for a `bestpractices.dev` badge. | A Baseline badge from bestpractices.dev is in the README. |
+| Mechanizer | `grep -rl -e osps-baseline-action -e pvtr-publish-results .github/workflows`, then `gh run list --workflow FILENAME --branch DEFAULT_BRANCH --limit 1 --json conclusion,url` (the workflow's basename and the default branch from step 1) | A workflow on the default branch runs the scanner action or the grc.store publish workflow on push, release, or schedule. Report the latest run result if you can read it. A publish workflow with no successful run is `Partial`: the likely cause is a missing namespace or trusted-publisher binding on grc.store. |
+| Defender | Needs the publish workflow. Read its `target:` input as `NAMESPACE/TARGET@...`, then `curl -sf https://hub.grc.store/v1/targets/NAMESPACE/TARGET` and read `.versions[0].latest.result` with `jq`. The level checked is the workflow's `applicability` entry (`maturity-1`, `-2`, or `-3`). | The latest result is `Passed` at the project's level. If the user gave no level and the workflow scans `maturity-1`, report "Level 1 only checked". No publish workflow: `Not started`. A 404 from the hub: `Not started`, the first run has not published. Any other failure to read the target: `Unknown`. |
 | CRA Readiness | Look for `CRA-READINESS.md` and its disclaimer. Check that SECURITY.md, CONTRIBUTING.md, and LICENSE exist. | The checklist file exists with the disclaimer, and the three supporting files exist. |
 
 Use these status values only:
@@ -66,11 +66,11 @@ Correct:
 
 | Badge | Status | Evidence |
 | --- | --- | --- |
-| Cleaner | Partial | `SECURITY-INSIGHTS.yml` exists; `cue vet` fails on missing `repository.core-team` |
-| Chronicler | Evidence found | README "Usage"; CONTRIBUTING.md "Reporting bugs" (Level 1 only checked) |
+| Cleaner | Partial | `security-insights.yml` exists; `cue vet` fails on missing `repository.core-team` |
+| Chronicler | Evidence found | README "Usage"; CONTRIBUTING.md "Reporting bugs" and "How to contribute"; SECURITY.md "Reporting a vulnerability" (Level 1 only checked) |
 | Inspector | Not started | No threat catalog or self-assessment found |
-| Mechanizer | Not started | No Baseline scan workflow; not on LFX Insights |
-| Defender | Not started | No bestpractices.dev badge in README |
+| Mechanizer | Not started | No Baseline scan workflow |
+| Defender | Not started | No publish workflow, nothing on grc.store |
 | CRA Readiness | Partial | SECURITY.md and LICENSE exist; no CRA-READINESS.md |
 
 **Next: run the `cleaner` skill.** Every other badge links its evidence from the Security Insights file, so fix it first.
@@ -90,7 +90,7 @@ Recommend the first badge in this order that is not `Evidence found`:
 2. `chronicler`: documentation comes before automation and assessment.
 3. `inspector`: the self-assessment feeds Baseline controls SA-03.01 and SA-03.02.
 4. `mechanizer`: automated scans show what still fails.
-5. `defender`: the capstone. It needs the four badges above.
+5. `defender`: the capstone. It needs the four badges above. If the Mechanizer evidence is the scanner action only, recommend `mechanizer` (Option 2, the publish workflow) instead, because Defender is judged from grc.store.
 
 Place `cra` by what the user asked for. If they asked about CRA readiness, recommend it first. Otherwise mention it after `chronicler`, because the two share most of their documents.
 
@@ -99,7 +99,9 @@ If every badge shows `Evidence found`, tell the user to run each badge skill's s
 ## Edge Cases
 
 - **Not a git repository, or no remote:** run the file checks only and mark the GitHub checks `Unknown`.
-- **Project not hosted on GitHub:** mark Mechanizer `Unknown` and tell the user to ask Slam organizers about an alternate evaluation path.
+- **Project not hosted on GitHub:** mark Mechanizer and Defender `Unknown` and tell the user to ask Slam organizers about an alternate evaluation path.
+- **Publish workflow present, no successful run:** report Mechanizer as `Partial` and Defender as `Not started`, and name the cause: the repository is probably not bound as a trusted publisher on its grc.store namespace, or the namespace does not exist yet. The `mechanizer` skill walks through both.
+- **Existing bestpractices.dev badge:** no longer Defender evidence. Mention it, but do not count it.
 - **Multi-repository project:** report on the current repository only, and say so. Offer to run again in the other repositories.
 - **Org-level files:** a repository with only repository fields in its Security Insights file, and no SECURITY.md or CONTRIBUTING.md of its own, is not missing them. Check `header.project-si-source` and the `OWNER/.github` repository before reporting a gap.
 - **No releases yet:** say so in the report. Many Baseline controls apply only after a first release, which makes Chronicler and Defender easier to reach.

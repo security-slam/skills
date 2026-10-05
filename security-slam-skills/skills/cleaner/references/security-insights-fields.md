@@ -33,25 +33,26 @@ This table shows where Slam badge work usually lands. It is a practical guide, n
 
 | Field | Evidence | Related Baseline controls | Badge |
 | --- | --- | --- | --- |
-| `project.vulnerability-reporting.contact`, `.policy` | SECURITY.md, CVD (coordinated vulnerability disclosure) policy | VM-01.01, VM-02.01, VM-03.01 | Cleaner, Chronicler |
+| `project.vulnerability-reporting.contact`, `.policy`, `.comment` | SECURITY.md, CVD (coordinated vulnerability disclosure) policy, private reporting channel | VM-01.01, VM-02.01, VM-03.01 | Cleaner, Chronicler |
 | `project.documentation.detailed-guide` | User guides. The OSPS Baseline scanner reads only this field for DO-01.01, so always set it when a user guide exists. `quickstart-guide` is optional and does not satisfy the scanner alone. | DO-01.01 | Cleaner, Chronicler |
-| `repository.documentation.contributing-guide` | CONTRIBUTING.md, including how to report defects | DO-02.01, GV-03.01, GV-03.02 | Chronicler |
+| `repository.documentation.contributing-guide` | CONTRIBUTING.md, including how to report defects, the contribution process, and build instructions | DO-02.01, DO-07.01, GV-03.01, GV-03.02 | Chronicler |
+| `repository.documentation.security-policy` | SECURITY.md, including where advisories are published and the SCA and SAST policies | VM-04.01, VM-05.01, VM-05.02, VM-06.01 | Chronicler, CRA |
 | `repository.documentation.dependency-management-policy` | How dependencies are selected, obtained, tracked | DO-06.01 | Chronicler |
 | `project.documentation.signature-verification` | How to verify release integrity and author identity | DO-03.01, DO-03.02 | Chronicler |
 | `project.documentation.support-policy` | Support scope, duration, and end of security updates | DO-04.01, DO-05.01 | Chronicler, CRA |
 | `project.documentation.design` | Design documentation of actors and actions | SA-01.01 | Defender |
-| `repository.documentation.governance` | Roles, responsibilities, members with sensitive access | GV-01.01, GV-01.02 | Defender |
-| `repository.documentation.review-policy` | Review requirements | QA-07.01, GV-04.01 | Defender |
+| `repository.documentation.governance` | Roles, responsibilities, members with sensitive access, review before escalated permissions | GV-01.01, GV-01.02, GV-04.01 | Chronicler, Defender |
+| `repository.documentation.review-policy` | Review requirements | QA-07.01 | Defender |
 | `repository.license` | LICENSE file | LE-02.01, LE-03.01 | Cleaner, CRA |
 | `repository.release.changelog` | Release notes with security fixes | BR-04.01 | Defender, CRA |
 | `repository.release.attestations[]` | SBOM, provenance, VEX | BR-06.01, QA-02.02, VM-04.02 | Defender |
 | `repository.security.assessments.self` | Self-assessment or threat model | SA-03.01, SA-03.02 | Inspector |
-| `repository.security.tools[]` | Baseline scanner, SCA, SAST | VM-05.03, VM-06.02 | Mechanizer |
+| `repository.security.tools[]` | Baseline scanner (with the grc.store target page as `location` when it publishes there), SCA, SAST | VM-05.03, VM-06.02 | Mechanizer, Defender |
 | `project.repositories[]` | Every codebase in the project | QA-04.01 | Cleaner |
 
 ## Security Tool Entry
 
-Use this shape when recording a tool, for example the OSPS Baseline scanner added for the Mechanizer badge:
+Use this shape when recording a tool. Option 1 (scanner action), the OSPS Baseline scanner added for the Mechanizer badge:
 
 ```yaml
 repository:
@@ -70,6 +71,16 @@ repository:
             name: OSPS Baseline evaluation
             predicate-uri: https://github.com/revanite-io/osps-baseline-action
             location: https://github.com/OWNER/REPO/actions/workflows/osps-baseline.yml
+```
+
+Option 2 (grc.store publish workflow, required for Defender): point `location` at the target page and `predicate-uri` at the workflow:
+
+```yaml
+        results:
+          ci:
+            name: OSPS Baseline evaluation
+            predicate-uri: https://github.com/revanite-io/pvtr-publish-results
+            location: https://grc.store/targets/NAMESPACE/TARGET
 ```
 
 `type` must be one of `fuzzing`, `container`, `secret`, `SCA`, `SAST`, or `other`. `rulesets`, `integration`, and `results` are required. `integration` requires all three booleans. `results.*` entries require `name`, `predicate-uri`, and `location`.

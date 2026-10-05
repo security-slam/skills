@@ -5,11 +5,11 @@ description: Earn the Security Slam CRA Readiness badge by implementing voluntar
 
 # CRA Badge
 
-The CRA badge requires implementing the CRA readiness guidelines provided by the project steward.
+The CRA badge requires implementing the CRA readiness guidelines provided by the project steward. The Slam has not yet confirmed what those guidelines are for each steward. Until it does, the eight-item checklist from the Slam's CRA Readiness Guide is the working definition.
 
 "CRA readiness" is a voluntary transparency signal. It is not regulatory compliance. The CRA places no obligations on open source developers or volunteer maintainers merely for publishing or maintaining code. That covers almost every open source project.
 
-Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness) by Roman Zhukov (Red Hat) and Madalin Neag (Linux Foundation), and the OpenSSF [CRA Brief Guide for OSS Developers](https://best.openssf.org/CRA-Brief-Guide-for-OSS-Developers). Recommended additions to item 1 come from the Linux Foundation [CRA Stewards Playbook](https://policy.openssf.org/CRA/stewards-playbook.html).
+Source: the Security Slam [CRA Readiness badge page](https://securityslam.com/library/cra-readiness), the [CRA Readiness Guide](https://securityslam.com/library/cra-readiness-guide) by Roman Zhukov (Red Hat) and Madalin Neag (Linux Foundation), and the OpenSSF [CRA Brief Guide for OSS Developers](https://best.openssf.org/CRA-Brief-Guide-for-OSS-Developers). Recommended additions to item 1 come from the Linux Foundation [CRA Stewards Playbook](https://policy.openssf.org/CRA/stewards-playbook.html).
 
 ## Critical Rules
 
@@ -33,7 +33,7 @@ Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library
 | 7 | License file | A clear LICENSE or COPYING file, ideally an OSI-approved license |
 | 8 | OSPS Baseline | Level 1 at minimum |
 
-Items 1 through 4 and 7 overlap heavily with OSPS Baseline Level 1 and the `chronicler` skill. Item 8 is the `defender` skill at Level 1. Reuse that work rather than duplicating it.
+Items 1 through 4 and 7 overlap heavily with OSPS Baseline Level 1 and the `chronicler` skill. Item 8 is the `defender` skill at Level 1. Reuse that work rather than duplicating it. For item 1, draft points 3 and 4 (the security contact, and the vulnerability process with its response timeframe) from the CVD Policy template as the `chronicler` skill's [OSPS Templates reference](../chronicler/references/osps-templates.md) describes, and keep its attribution; the skeleton in this skill's reference covers the other points.
 
 For examples and drafting guidance per item, see [references/cra-readiness-items.md](references/cra-readiness-items.md).
 
@@ -62,7 +62,7 @@ gh api repos/OWNER/REPO/license --jq .license.spdx_id    # item 7
 
 ### 3. Close gaps
 
-Draft missing content with the maintainer. Extend SECURITY.md for item 1 rather than creating a parallel policy. Ask the maintainer for the support period; never invent one.
+Draft missing content with the maintainer. Extend SECURITY.md for item 1 rather than creating a parallel policy. For its points 3 and 4, draft from the CVD Policy template as the `chronicler` skill's [OSPS Templates reference](../chronicler/references/osps-templates.md) describes, and keep the attribution comment. Ask the maintainer for the support period and the response timeframe; never invent either.
 
 Correct - an end-of-life statement the maintainers confirmed:
 
@@ -86,9 +86,9 @@ This project is CRA compliant and guarantees vulnerability fixes within 30 days.
 3. Keep the disclaimer intact.
 4. Link the file from the README.
 
-### 5. Machine-readable (optional)
+### 5. Link each artifact from Security Insights
 
-Security Insights has no CRA-specific field. Record the underlying evidence in the standard v2 fields instead: `repository.documentation.security-policy`, `contributing-guide`, `project.documentation.support-policy`, `repository.release.changelog`, and `repository.license`. Validate with the `cleaner` skill.
+The badge page asks for every artifact in the checklist to be linked from `security-insights.yml`. Security Insights has no CRA-specific field, so record each one in the standard v2 field it belongs to: the policy in `repository.documentation.security-policy` and `project.vulnerability-reporting.policy`, the contributing guide and bug reporting guide in `repository.documentation.contributing-guide`, the support period in `project.documentation.support-policy`, release notes in `repository.release.changelog`, the license in `repository.license`, and the Baseline evidence in `repository.security.tools[]`. Validate with the `cleaner` skill.
 
 Do not copy the Kyverno file the CRA guide links as its example. It declares schema 2.1.0 but uses v1 field names and fails v2 validation.
 
@@ -96,11 +96,11 @@ Do not copy the Kyverno file the CRA guide links as its example. It declares sch
 
 - [ ] All eight items `Met`, with steward guidance applied if it exists
 - [ ] CRA-READINESS.md published with the disclaimer and linked from the README
-- [ ] Security Insights updated and valid (if used)
+- [ ] Security Insights links every artifact and validates
 - [ ] Completion notification submitted per the steward's instructions
 
 ## Next Steps to Suggest
 
-These go beyond the badge. They are engineering improvements, not CRA requirements: generate SBOMs, adopt SLSA starting at Level 1, earn an OpenSSF Best Practices badge, reach OSPS Level 2 or 3, automate with Gemara, Minder, and Scorecard.
+These go beyond the badge. They are engineering improvements, not CRA requirements: generate SBOMs, adopt SLSA starting at Level 1, reach OSPS Level 2 or 3, automate with Gemara, Minder, and Scorecard.
 
 Questions go to the [OpenSSF Global Cyber Policy Slack channel](https://openssf.slack.com/archives/C084A6XPX0F).

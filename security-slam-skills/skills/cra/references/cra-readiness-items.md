@@ -1,6 +1,6 @@
 # CRA Readiness Items: Examples and Guidance
 
-Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness). Example links are the guide's own picks.
+Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness-guide). Example links are the guide's own picks.
 
 ## 1. Cybersecurity and Vulnerability Management Policy
 
@@ -25,15 +25,11 @@ All changes go through pull request review and CI (tests, SAST, dependency scann
 ## Risk Handling
 Maintainers triage security-relevant issues and track them privately until fixed.
 
-## Reporting a Vulnerability
-Use GitHub private vulnerability reporting or email security@example.org.
-We acknowledge reports within 5 business days and coordinate disclosure with the reporter.
-
 ## Support Period and End of Life
 Security fixes go to the latest minor release. Older releases are end of life.
 ```
 
-Fill every value from the maintainers. The timelines above are placeholders, not recommendations.
+Fill every value from the maintainers. The skeleton covers points 1, 2, and 5 only. Draft points 3 and 4, the security contact and the vulnerability process with its response timeframe, from the CVD Policy template: see the `chronicler` skill's [OSPS Templates reference](../../chronicler/references/osps-templates.md).
 
 ### Recommended additions from the CRA Stewards Playbook
 
@@ -88,4 +84,4 @@ A LICENSE or COPYING file, ideally from the [OSI-approved list](https://opensour
 
 ## 8. OSPS Baseline Level 1
 
-Meet [OSPS Baseline](https://baseline.openssf.org) Level 1. Items 1 through 7 cover much of it already. Use the `defender` skill for the full gap analysis, and link the evidence (a bestpractices.dev badge, a completed checklist, or scanner results).
+Meet [OSPS Baseline](https://baseline.openssf.org) Level 1. Items 1 through 7 cover much of it already. Use the `defender` skill for the full gap analysis, and link the evidence: the project's grc.store target page, the scan workflow from the `mechanizer` skill, or a completed checklist.
