@@ -30,7 +30,7 @@ find . -maxdepth 2 -iname 'security-insights.y*ml' -not -path './node_modules/*'
 
 If one exists, read it and note its `header.schema-version`. A `schema-version` of `1.x.x` is the retired v1 format. Tell the user and migrate it to v2 in step 4.
 
-If none exists, create `SECURITY-INSIGHTS.yml` at the repository root. That is the name and location the Slam instructions use. The upstream spec also accepts `security-insights.yml` in the root or in `.github/`. Keep whatever convention the project's other tooling already expects.
+If none exists, create `security-insights.yml` at the repository root. That is the name and location the Slam instructions use. The upstream spec also accepts `SECURITY-INSIGHTS.yml` and the `.github/` directory, so keep an existing file's name and location. The commands below use `$SI` for the file's path.
 
 ### 2. Gather evidence
 
@@ -108,9 +108,10 @@ security:
 Validate against the CUE schema that matches `header.schema-version`. The spec does not publish a CUE module, so download the schema file for that tag:
 
 ```bash
-v=$(yq '.header.schema-version' SECURITY-INSIGHTS.yml)
+SI=security-insights.yml   # or the existing file's path
+v=$(yq '.header.schema-version' "$SI")
 curl -sfL "https://raw.githubusercontent.com/ossf/security-insights/v${v}/spec/schema.cue" -o /tmp/si-schema.cue
-cue vet -d '#SecurityInsights' /tmp/si-schema.cue SECURITY-INSIGHTS.yml
+cue vet -d '#SecurityInsights' /tmp/si-schema.cue "$SI"
 ```
 
 If `cue` is missing, install it with `go install cuelang.org/go/cmd/cue@latest` or `brew install cue-lang/tap/cue`. Silent output means the file is valid.
@@ -118,11 +119,13 @@ If `cue` is missing, install it with `go install cuelang.org/go/cmd/cue@latest` 
 Then check every URL in the file resolves:
 
 ```bash
-grep -oE 'https://[^ "]+' SECURITY-INSIGHTS.yml | sort -u | while read -r u; do
+grep -oE 'https://[^ "]+' "$SI" | sort -u | while read -r u; do
   code=$(curl -s -o /dev/null -w '%{http_code}' -L "$u"); echo "$code $u"; done
 ```
 
 Report any non-200 URL to the user. Do not mark the badge ready while a URL is broken.
+
+Suggest the user review the file in the [Security Insights Editor](https://security-insights.openssf.org/editor/). It loads an existing file and validates it section by section, which suits a maintainer checking a draft field by field.
 
 Expect a 404 for `header.url`, and for links to files added in the same change, until the change merges to the default branch. Tell the user to re-check those URLs after merging. Treat any other non-200 URL as broken.
 

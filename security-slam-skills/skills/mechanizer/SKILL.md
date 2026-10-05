@@ -1,16 +1,16 @@
 ---
 name: mechanizer
-description: Earn the Security Slam Mechanizer badge by automating OSPS Baseline evaluation and publishing the results, through either LFX Insights (100% on Security and Best Practices) or the OSPS Baseline GitHub Action (zero failed controls). Use when the user mentions the Mechanizer badge, Security Slam, automated baseline evaluation, OSPS Baseline scanner, pvtr-github-repo-scanner, Privateer, osps-baseline-action, or LFX Insights security score. Sets up the scan, triages failures, and records the tooling in Security Insights.
+description: Earn the Security Slam Mechanizer badge by wiring a live, recurring OSPS Baseline scan into the project's default branch, through either the OSPS Baseline GitHub Action or the grc.store publish workflow (pvtr-publish-results). Use when the user mentions the Mechanizer badge, Security Slam, automated baseline evaluation, OSPS Baseline scanner, pvtr-github-repo-scanner, Privateer, osps-baseline-action, pvtr-publish-results, or grc.store. Sets up the scan, triages failures, and records the tooling in Security Insights.
 ---
 
 # Mechanizer Badge
 
-The Mechanizer badge requires automated OSPS Baseline evaluation with published results. Two paths qualify:
+The Mechanizer badge requires OSPS Baseline evaluation that runs on its own: a live, recurring scan on the default branch, noted in the Security Insights file. A passing score is not required. Two paths qualify, and both run the same scanner ([Privateer](https://privateerproj.com) with the OpenSSF [pvtr-github-repo-scanner](https://github.com/ossf/pvtr-github-repo-scanner) plugin):
 
-- **Option 1: LFX Insights (recommended by the Slam).** Reach 100% on the project's Security & Best Practices dashboard. LFX Insights curates a subset of controls. Onboarding takes longer, but 100% is easier once the project is in.
-- **Option 2: OSPS Baseline GitHub Action.** Reach zero failed controls. It checks every control the scanner can verify automatically. It starts faster but demands more.
+- **Option 1: OSPS Baseline scanner action.** Results stay in the repository: a workflow artifact, the job log, or SARIF in the Security tab. It is the fastest start and has no rate limits.
+- **Option 2: grc.store publish workflow.** The [`revanite-io/pvtr-publish-results`](https://github.com/revanite-io/pvtr-publish-results) reusable workflow runs the same scan and publishes each result to a public target page on grc.store. It needs a namespace and a trusted-publisher binding first, and the hub stores one result per target every ten minutes.
 
-Both use the same scanner ([Privateer](https://privateerproj.com) with the [pvtr-github-repo-scanner](https://github.com/ossf/pvtr-github-repo-scanner) plugin).
+The Defender badge requires Option 2. If the project plans to go that far, recommend starting there.
 
 Source: [securityslam.com/library/mechanizer](https://securityslam.com/library/mechanizer).
 
@@ -18,18 +18,14 @@ Source: [securityslam.com/library/mechanizer](https://securityslam.com/library/m
 
 - **Never weaken a check to reach green.** Fix the underlying control or leave it failing and explain why.
 - **Never change repository or org settings without explicit approval.** Branch protection, MFA enforcement, and default workflow permissions are outward-facing changes. Show the exact change and wait for a yes.
-- **Pin every action to a full commit SHA** with a version comment. Resolve SHAs from the GitHub API at generation time. Never guess or reuse a SHA from memory.
+- **Pin every action to a full commit SHA** with a version comment. Resolve SHAs from the GitHub API at generation time. Never guess or reuse a SHA from memory. The one exception is the `pvtr-publish-results` call in Option 2, which the hub requires by tag.
 - **Keep scanner tokens away from untrusted code.** Never run the scan on `pull_request_target` or on fork PRs.
 
 ## Workflow
 
 ### 1. Choose the path
 
-Check LFX Insights first:
-
-- Search [insights.linuxfoundation.org](https://insights.linuxfoundation.org/) for the project.
-- If it is listed, open its Security & Best Practices page and note the score and failing checks. Prefer Option 1.
-- If it is not listed, tell the user onboarding goes through a [project onboarding discussion](https://github.com/linuxfoundation/insights/discussions/categories/project-onboardings) and depends on community upvotes. Offer Option 2 in the meantime. Doing both is fine.
+Ask whether the project is going for the Defender badge. If yes, or the user wants public results, use Option 2. Otherwise Option 1 is faster. Doing both is fine.
 
 For a project not hosted on GitHub, tell the user to contact Slam organizers for an alternate evaluation path.
 
@@ -54,9 +50,9 @@ Two failures are common on new projects:
 
 ### 3. Fix failures
 
-Work through the table with the user. For each settings change, show the exact `gh api` call or UI steps and wait for approval. Re-scan after each batch.
+The badge does not need a passing scan, so this step is optional. It is the bulk of the Defender badge, so offer it. Work through the table with the user. For each settings change, show the exact `gh api` call or UI steps and wait for approval. Re-scan after each batch.
 
-### 4. Add the CI workflow (Option 2)
+### 4a. Add the scanner workflow (Option 1)
 
 Create `.github/workflows/osps-baseline.yml` from [assets/osps-baseline.yml](assets/osps-baseline.yml). Before writing it:
 
@@ -98,11 +94,16 @@ on:
 
 The action assesses Maturity Level 1 only. That is expected and still satisfies the badge.
 
+### 4b. Add the publish workflow (Option 2)
+
+Use the `defender` skill's template, [../defender/assets/grc-store-results.yml](../defender/assets/grc-store-results.yml), and its [publishing reference](../defender/references/grc-store-publishing.md) for the grc.store prerequisites, the tag-pinning exception, the token, and error codes. The template runs weekly and on demand. Never add a `pull_request` trigger: the hub refuses more than one result per target every ten minutes.
+
 ### 5. Publish results
 
-- Keep the workflow on a schedule so results stay fresh, and upload results as an artifact.
-- Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab. Use osps-baseline-action v1.5.2 or later. Through v1.5.1, `fail-on-error: "true"` exited before the SARIF upload, so failed controls reached only the workflow log and the results artifact (`pvtr/pvtr.sarif`). v1.5.1 also showed two-digit counts wrong in the workflow summary.
-- Add a status badge for the workflow to the README.
+- Keep the workflow on a schedule, or on pushes to the default branch, so results stay fresh.
+- **Option 1:** upload results as an artifact. Optionally set `upload-sarif: "true"` to surface failed controls in the Security tab. Use osps-baseline-action v1.5.2 or later. Through v1.5.1, `fail-on-error: "true"` exited before the SARIF upload, so failed controls reached only the workflow log and the results artifact (`pvtr/pvtr.sarif`). v1.5.1 also showed two-digit counts wrong in the workflow summary. The badge does not need a pass, so `fail-on-error: "false"` keeps a failing scan from turning every run red.
+- **Option 2:** the target page on grc.store is the published result. Link it from the README.
+- Optionally add a status badge for the workflow to the README.
 
 ### 6. Record the tooling in Security Insights
 
@@ -110,9 +111,9 @@ Add a `repository.security.tools` entry for the scanner. The `cleaner` skill's [
 
 ### 7. Submission checklist
 
-- [ ] LFX Insights shows 100% Security & Best Practices, **or** the latest scheduled scan shows zero failed controls
-- [ ] Workflow pinned by SHA and running on a schedule
-- [ ] Results published (artifact, Security tab, or LFX dashboard link)
+- [ ] A scan workflow runs on the default branch on a schedule or on push, and its latest run completed
+- [ ] Every action pinned by SHA, except the `pvtr-publish-results` tag (Option 2)
+- [ ] Results published: artifact or Security tab (Option 1), or the grc.store target page (Option 2)
 - [ ] Security Insights lists the scanner and validates
 - [ ] Completion notification submitted on the Mechanizer badge page
 
@@ -122,4 +123,4 @@ Add a `repository.security.tools` entry for the scanner. The `cleaner` skill's [
 - **Control fails because the scanner is behind the Baseline version:** note the version gap in the submission and ask a Slam advisor. Do not fake compliance.
 - **Org-level controls (MFA):** the MFA check runs only when the token has `admin:org`. A repository-scoped octo-sts token or fine-grained PAT does not, so expect AC-01.01 to report "needs review". Ask the user whether an org admin will run that scan. Never request broader scopes than needed.
 - **Multi-repo project:** add the workflow to every repository listed in Security Insights, or run it centrally with a matrix over the repos.
-- **Alternative tooling:** OpenSSF [Minder](https://mindersec.dev/) publishes Baseline Level 1 rules and can auto-remediate some checks. It helps close gaps but does not replace the badge's scoring paths.
+- **Alternative tooling:** OpenSSF [Minder](https://mindersec.dev/) publishes Baseline Level 1 rules and can auto-remediate some checks. It helps close gaps but does not replace either scan path.

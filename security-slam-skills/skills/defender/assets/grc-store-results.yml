@@ -1,0 +1,74 @@
+---
+name: Publish OSPS Baseline results to grc.store
+
+# Runs on the default branch only: the hub trusts this repository as a CI
+# publisher for the namespace, optionally at one git ref, and refuses a run
+# from any other. Weekly, not per pull request: every published run is a
+# permanent coordinate, and the hub stores one log per target and catalog
+# every ten minutes.
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Run the scan but publish nothing (bundles land in the pvtr-bundles artifact)"
+        type: boolean
+        default: true
+  schedule:
+    - cron: "0 10 * * 1" # Weekly, so the result never goes stale (30 days)
+
+permissions: {}
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # Read the latest release tag
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      # The version the results describe: the latest release, or 0.0.0 before
+      # the first one
+      - name: Resolve the version
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName 2>/dev/null || true)
+          tag=${tag#v}
+          echo "version=${tag:-0.0.0}" >> "$GITHUB_OUTPUT"
+
+  results:
+    needs: version
+    permissions:
+      contents: read # The scanner reads this repository through the job token
+      id-token: write # Trusted publishing to the hub and the Sigstore signing identity
+      # The called workflow's report job requests it, and GitHub checks every
+      # called job at startup, even one that upload-sarif: false skips.
+      security-events: write
+    # Pinned by tag, not SHA, on purpose: the hub compares the signing
+    # certificate's workflow ref to this exact tag and rejects a SHA-pinned
+    # call. The hub records the workflow commit with every stored log.
+    uses: revanite-io/pvtr-publish-results/.github/workflows/publish.yml@v1 # zizmor: ignore[unpinned-uses] the hub requires the tag
+    with:
+      target: NAMESPACE/TARGET_ID@${{ needs.version.outputs.version }}
+      license: CC0-1.0
+      # A scheduled run has no inputs; it publishes.
+      dry-run: ${{ inputs.dry-run == true }}
+    secrets:
+      # Inline because the plugin's token can only come from its config vars.
+      # The job token is read-only and scoped to this repository, so settings
+      # the scanner can't read (admin, org MFA) report "needs review".
+      config: |
+        targets:
+          TARGET_ID:
+            plugin: openssf/github-repo
+            policy:
+              catalogs:
+                - CATALOG
+              applicability:
+                - maturity-LEVEL
+            vars:
+              owner: OWNER
+              repo: REPO
+              token: ${{ secrets.GITHUB_TOKEN }}

@@ -31,7 +31,7 @@ That question runs `slam-status`, which is read-only. It reports where you stand
 
 ## Status
 
-Early preview. The skills work end to end on four repositories, and each one earned evidence for all six badges using the skills:
+Early preview. The skills work end to end on four repositories. Each one earned evidence for all six badges under the earlier criteria, when Defender's evidence was the bestpractices.dev Baseline badge. Defender now requires published grc.store results, and none of the four has published yet:
 
 | Repository | What it is | Baseline Level 1 |
 | --- | --- | --- |
@@ -48,6 +48,7 @@ Not yet tested:
 - OSPS Baseline Level 2 and 3 paths, such as release signing, SBOMs (software bills of materials), and release verification docs. All four repositories stopped at Level 1.
 - The prose self-assessment option of `inspector`, and its hand-off to the gemara-ai plugin.
 - Projects hosted outside GitHub.
+- The grc.store publish workflow (`defender` and `mechanizer` Option 2) on any of the four repositories. The template follows a workflow that has published to production, but no Slam repository has run it.
 - Agents other than Claude Code and Codex, and every skill except `slam-status` outside Claude Code.
 
 The skills pin the specification versions listed under [Versions Targeted](#versions-targeted). When those specifications change, the skills can lag behind until a release updates them.
@@ -95,8 +96,8 @@ Not sure where a project stands? Run `slam-status` first. Otherwise start with C
 | `cleaner` | Complete and validate the project's Security Insights YAML file. |
 | `chronicler` | Complete every OSPS Baseline documentation control (OSPS-DO) for the project's maturity level. |
 | `inspector` | Complete a Gemara threat assessment or an OSPS self-assessment. |
-| `mechanizer` | Automate Baseline evaluation and publish results: 100% on LFX Insights or zero failures from the OSPS Baseline GitHub Action. |
-| `defender` | Meet the OSPS Baseline for the project's maturity level and earn the bestpractices.dev Baseline badge. |
+| `mechanizer` | Run a recurring OSPS Baseline scan with the scanner action or the grc.store publish workflow. |
+| `defender` | Reach a passing OSPS Baseline status for the project's maturity level, published to grc.store. |
 | `cra` | Implement voluntary EU Cyber Resilience Act (CRA) readiness practices and publish a readiness checklist with a disclaimer. |
 | `slam-status` | Check a repo against all six badges at once and recommend which one to work on next. Read-only. |
 

@@ -9,7 +9,7 @@ The CRA badge requires implementing the CRA readiness guidelines provided by the
 
 "CRA readiness" is a voluntary transparency signal. It is not regulatory compliance. The CRA places no obligations on open source developers or volunteer maintainers merely for publishing or maintaining code. That covers almost every open source project.
 
-Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness) by Roman Zhukov (Red Hat) and Madalin Neag (Linux Foundation), and the OpenSSF [CRA Brief Guide for OSS Developers](https://best.openssf.org/CRA-Brief-Guide-for-OSS-Developers). Recommended additions to item 1 come from the Linux Foundation [CRA Stewards Playbook](https://policy.openssf.org/CRA/stewards-playbook.html).
+Source: the Security Slam [CRA Readiness badge page](https://securityslam.com/library/cra-readiness), its [CRA Readiness Guide](https://securityslam.com/library/cra-readiness-guide) by Roman Zhukov (Red Hat) and Madalin Neag (Linux Foundation), and the OpenSSF [CRA Brief Guide for OSS Developers](https://best.openssf.org/CRA-Brief-Guide-for-OSS-Developers). Recommended additions to item 1 come from the Linux Foundation [CRA Stewards Playbook](https://policy.openssf.org/CRA/stewards-playbook.html).
 
 ## Critical Rules
 
@@ -86,9 +86,9 @@ This project is CRA compliant and guarantees vulnerability fixes within 30 days.
 3. Keep the disclaimer intact.
 4. Link the file from the README.
 
-### 5. Machine-readable (optional)
+### 5. Link the evidence from Security Insights
 
-Security Insights has no CRA-specific field. Record the underlying evidence in the standard v2 fields instead: `repository.documentation.security-policy`, `contributing-guide`, `project.documentation.support-policy`, `repository.release.changelog`, and `repository.license`. Validate with the `cleaner` skill.
+The badge page asks for each artifact to be linked from the Security Insights file. If the project has none, run the `cleaner` skill first. Security Insights has no CRA-specific field, so record the evidence in the standard v2 fields: `repository.documentation.security-policy`, `contributing-guide`, `project.documentation.support-policy`, `repository.release.changelog`, and `repository.license`. Validate with the `cleaner` skill.
 
 Do not copy the Kyverno file the CRA guide links as its example. It declares schema 2.1.0 but uses v1 field names and fails v2 validation.
 
@@ -96,7 +96,7 @@ Do not copy the Kyverno file the CRA guide links as its example. It declares sch
 
 - [ ] All eight items `Met`, with steward guidance applied if it exists
 - [ ] CRA-READINESS.md published with the disclaimer and linked from the README
-- [ ] Security Insights updated and valid (if used)
+- [ ] Each artifact linked from Security Insights, and the file validates
 - [ ] Completion notification submitted per the steward's instructions
 
 ## Next Steps to Suggest

@@ -44,8 +44,8 @@ Check each badge in this order. Record a status and the evidence (a path, URL, o
 | Cleaner | `find . -maxdepth 2 -iname 'security-insights.y*ml'` | The file exists, declares `schema-version` 2.x, and passes `cue vet` (see the `cleaner` skill). If `cue` is missing, report the file as "present, not validated". |
 | Chronicler | Look for user guides and a defect reporting guide (README, CONTRIBUTING.md, docs). A section counts as a defect reporting guide when it tells people how to file a bug, whatever its heading says ("Reporting Bugs", "Issue Report Process", "Filing Issues"). | Both Level 1 docs exist. Higher levels need the maturity level, so report "Level 1 only checked" unless the user gave a level. |
 | Inspector | Look for a Gemara threat catalog or a self-assessment document, and for `repository.security.assessments.self.evidence` in the Security Insights file. | An assessment document exists and the Security Insights file links it. |
-| Mechanizer | `grep -rl 'osps-baseline-action' .github/workflows`, and check the project on [LFX Insights](https://insights.linuxfoundation.org/). | A scheduled Baseline scan workflow exists, or the project is on LFX Insights. Report the latest run result if you can read it. |
-| Defender | Search the README for a `bestpractices.dev` badge. | A Baseline badge from bestpractices.dev is in the README. |
+| Mechanizer | `grep -rl -e osps-baseline-action -e pvtr-publish-results .github/workflows` | A Baseline scan workflow runs on the default branch on a schedule or on push. A passing score is not required. Report the latest run result if you can read it. |
+| Defender | Look for a `grc.store/targets/NAMESPACE/TARGET_ID` link in the README or the Security Insights assessments. If you find one, query `curl -s "https://hub.grc.store/v1/targets?namespace=NAMESPACE"` for the target's `verified_at` and `latest` result. | The target is verified and its latest published result passes. A failing result is `Partial`. A bestpractices.dev Baseline badge alone is `Partial`: the badge now needs a published grc.store result. |
 | CRA Readiness | Look for `CRA-READINESS.md` and its disclaimer. Check that SECURITY.md, CONTRIBUTING.md, and LICENSE exist. | The checklist file exists with the disclaimer, and the three supporting files exist. |
 
 Use these status values only:
@@ -66,11 +66,11 @@ Correct:
 
 | Badge | Status | Evidence |
 | --- | --- | --- |
-| Cleaner | Partial | `SECURITY-INSIGHTS.yml` exists; `cue vet` fails on missing `repository.core-team` |
+| Cleaner | Partial | `security-insights.yml` exists; `cue vet` fails on missing `repository.core-team` |
 | Chronicler | Evidence found | README "Usage"; CONTRIBUTING.md "Reporting bugs" (Level 1 only checked) |
 | Inspector | Not started | No threat catalog or self-assessment found |
-| Mechanizer | Not started | No Baseline scan workflow; not on LFX Insights |
-| Defender | Not started | No bestpractices.dev badge in README |
+| Mechanizer | Not started | No Baseline scan workflow |
+| Defender | Not started | No grc.store target linked from README or Security Insights |
 | CRA Readiness | Partial | SECURITY.md and LICENSE exist; no CRA-READINESS.md |
 
 **Next: run the `cleaner` skill.** Every other badge links its evidence from the Security Insights file, so fix it first.

@@ -1,6 +1,6 @@
 # CRA Readiness Items: Examples and Guidance
 
-Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness). Example links are the guide's own picks.
+Source: the Security Slam [CRA Readiness Guide](https://securityslam.com/library/cra-readiness-guide). Example links are the guide's own picks.
 
 ## 1. Cybersecurity and Vulnerability Management Policy
 
@@ -88,4 +88,4 @@ A LICENSE or COPYING file, ideally from the [OSI-approved list](https://opensour
 
 ## 8. OSPS Baseline Level 1
 
-Meet [OSPS Baseline](https://baseline.openssf.org) Level 1. Items 1 through 7 cover much of it already. Use the `defender` skill for the full gap analysis, and link the evidence (a bestpractices.dev badge, a completed checklist, or scanner results).
+Meet [OSPS Baseline](https://baseline.openssf.org) Level 1. Items 1 through 7 cover much of it already. Use the `defender` skill for the full gap analysis, and link the evidence (a grc.store target page, a completed checklist, or scanner results).
