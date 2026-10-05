@@ -17,6 +17,11 @@ Source: [securityslam.com/library/cleaner](https://securityslam.com/library/clea
 - **Never invent contacts.** Take names and emails from existing files (MAINTAINERS, CODEOWNERS, SECURITY.md, GOVERNANCE.md). Ask the user for anything missing.
 - **Reuse an existing file.** If the repo already has a Security Insights file, update it in place. Never create a second one.
 - **Always validate before declaring done.**
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before the audit, run the OSPS Baseline scanner as [the scanner reference](../mechanizer/references/local-scan.md) describes. Five Level 1 controls read the Security Insights file directly (OSPS-DO-01.01, DO-02.01, GV-03.01, QA-04.01, and VM-02.01), and each failing message names the field the scanner looked for. Those fields are the first rows of the table in step 3, and the scan is the check that the file written in step 4 says what the scanner needs.
 
 ## Workflow
 

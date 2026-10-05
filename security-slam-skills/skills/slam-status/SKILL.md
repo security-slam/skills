@@ -11,11 +11,16 @@ This skill does not earn badges. The `cleaner`, `chronicler`, `inspector`, `mech
 
 ## Critical Rules
 
-- **Never write, edit, or delete files.** Never change repository settings. This skill only reads.
+- **Never write, edit, or delete files in the repository.** Never change repository settings. This skill only reads. The scanner in [Scan First](#scan-first) writes to a temporary directory outside the repository, and nothing else is written.
 - **Never say a badge is earned.** Slam evaluators award badges. Say "evidence found" or "ready to submit".
 - **Keep each check quick.** Look for the evidence listed below. Leave the full audit to the badge skill.
 - **Mark what you cannot check as `Unknown`** and say why. Never guess a status.
 - **End with exactly one recommended next skill.** Stop there. Never add an "after that" or a second suggestion.
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before the quick checks, run the OSPS Baseline scanner once over the repository as [the scanner reference](../mechanizer/references/local-scan.md) describes, at `maturity-1` unless the user gave a level. It takes a few seconds, writes only to a temporary directory outside the repository, and its results are the evidence for every quick check it covers: a `Passed` or `Failed` control settles the check, and its message is the evidence column. Infer only what the scan left as `Needs Review` or `Not Run`.
 
 ## Workflow
 
@@ -46,7 +51,7 @@ Check each badge in this order. Record a status and the evidence (a path, URL, o
 | Inspector | Look for a Gemara threat catalog or a self-assessment document, and for `repository.security.assessments.self.evidence` in the Security Insights file. | An assessment document exists and the Security Insights file links it. |
 | Mechanizer | `grep -rl -e osps-baseline-action -e pvtr-publish-results .github/workflows`, then `gh run list --workflow FILENAME --branch DEFAULT_BRANCH --limit 1 --json conclusion,url` (the workflow's basename and the default branch from step 1) | A workflow on the default branch runs the scanner action or the grc.store publish workflow on push, release, or schedule. Report the latest run result if you can read it. A publish workflow with no successful run is `Partial`: the likely cause is a missing namespace or trusted-publisher binding on grc.store. |
 | Defender | Needs the publish workflow. Read its `target:` input as `NAMESPACE/TARGET@...`, then `curl -sf https://hub.grc.store/v1/targets/NAMESPACE/TARGET` and read `.versions[0].latest.result` with `jq`. The level checked is the workflow's `applicability` entry (`maturity-1`, `-2`, or `-3`). | The latest result is `Passed` at the project's level. If the user gave no level and the workflow scans `maturity-1`, report "Level 1 only checked". No publish workflow: `Not started`. A 404 from the hub: `Not started`, the first run has not published. Any other failure to read the target: `Unknown`. |
-| CRA Readiness | Look for `CRA-READINESS.md` and its disclaimer. Check that SECURITY.md, CONTRIBUTING.md, and LICENSE exist. | The checklist file exists with the disclaimer, and the three supporting files exist. |
+| CRA Readiness | None. The badge details are not published yet. | Report `Not started` with the note "Details for this badge will be released on October 12, 2026." |
 
 Use these status values only:
 
@@ -71,7 +76,7 @@ Correct:
 | Inspector | Not started | No threat catalog or self-assessment found |
 | Mechanizer | Not started | No Baseline scan workflow |
 | Defender | Not started | No publish workflow, nothing on grc.store |
-| CRA Readiness | Partial | SECURITY.md and LICENSE exist; no CRA-READINESS.md |
+| CRA Readiness | Not started | Details for this badge will be released on October 12, 2026 |
 
 **Next: run the `cleaner` skill.** Every other badge links its evidence from the Security Insights file, so fix it first.
 ```
@@ -92,7 +97,7 @@ Recommend the first badge in this order that is not `Evidence found`:
 4. `mechanizer`: automated scans show what still fails.
 5. `defender`: the capstone. It needs the four badges above. If the Mechanizer evidence is the scanner action only, recommend `mechanizer` (Option 2, the publish workflow) instead, because Defender is judged from grc.store.
 
-Place `cra` by what the user asked for. If they asked about CRA readiness, recommend it first. Otherwise mention it after `chronicler`, because the two share most of their documents.
+Never recommend `cra` until its details are published on October 12, 2026. If the user asked about CRA readiness, tell them that date and recommend `chronicler`, which covers the documents CRA readiness builds on.
 
 If every badge shows `Evidence found`, tell the user to run each badge skill's submission checklist.
 

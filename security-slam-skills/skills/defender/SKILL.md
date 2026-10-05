@@ -18,6 +18,11 @@ Source: [securityslam.com/library/defender](https://securityslam.com/library/def
 - **Every "Met" needs evidence:** a file path, URL, API response, or settings screenshot the user confirms. For controls the scanner never evaluates, the evidence goes into a Security Insights field, and evaluators follow the link. A bare "yes" does not count.
 - **Never change repository or org settings without explicit approval.** Show the exact change first.
 - **Answer honestly.** An unmet control stays unmet. Justify `N/A` only when the control's condition truly does not apply (for example, no releases yet).
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before reading the hub, run the OSPS Baseline scanner locally at the chosen level as [the scanner reference](../mechanizer/references/local-scan.md) describes. The hub's published result stays the verdict for the badge. The local run is the working picture between publishes: it runs the same plugin version the hub does, it reads the settings the maintainer's token can see and the job token cannot (branch protection, secret scanning), and rerunning it is how a fix is checked before it is merged and published.
 
 ## Maturity Level
 
@@ -105,7 +110,7 @@ For QA-06.03 and BR-07.02, draft from the Test Coverage and Secrets and Credenti
 
 ### 4. Drive the failed controls to zero
 
-Work with the user in priority order: Level 1 first, then settings changes (fast, high impact), then docs, then release pipeline work. Fix one, merge it, and let the next run confirm it. To check a fix before it lands and publishes, run the OSPS Baseline Action on the pull request or run the scanner locally; never trigger the publish workflow from a pull request. Trigger it by hand with `gh workflow run` on the workflow file step 1 found when you do not want to wait, and respect the hub's ten-minute window per target.
+Work with the user in priority order: Level 1 first, then settings changes (fast, high impact), then docs, then release pipeline work. Fix one, merge it, and let the next run confirm it. To check a fix before it lands and publishes, rerun the local scan from [Scan First](#scan-first), or run the OSPS Baseline Action on the pull request; never trigger the publish workflow from a pull request. Trigger it by hand with `gh workflow run` on the workflow file step 1 found when you do not want to wait, and respect the hub's ten-minute window per target.
 
 Correct - a precise settings change shown for approval:
 

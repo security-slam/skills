@@ -21,6 +21,11 @@ Source: [securityslam.com/library/mechanizer](https://securityslam.com/library/m
 - **Never guess the grc.store namespace.** Ask for the slug and check it exists.
 - **Never perform grc.store setup.** Enterprise access, namespaces, and trusted-publisher bindings are created in the grc.store UI by an enterprise or namespace admin. Instruct, then ask the user to confirm. The hub cannot tell a user who their enterprise admins are, and neither can you.
 - **Keep scanner tokens away from untrusted code.** Never run a scan on `pull_request_target` or on fork PRs.
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before choosing an option, run the OSPS Baseline scanner locally as [the scanner reference](../mechanizer/references/local-scan.md) describes. It is the same `openssf/github-repo` plugin both CI options run, so the local table in step 2 is what the first CI run will report, minus the settings a repository-scoped job token cannot read.
 
 ## Workflow
 
@@ -35,7 +40,7 @@ For a project not hosted on GitHub, tell the user to contact Slam organizers for
 
 ### 2. Run a local baseline scan
 
-Get the current picture before touching CI. Follow the [pvtr-github-repo-scanner README](https://github.com/ossf/pvtr-github-repo-scanner) to run it locally against the repo with a read-only token. Summarize the results:
+Summarize the results of the local run from [Scan First](#scan-first), one table per repository:
 
 | Control | Result | Cause | Fix |
 | --- | --- | --- | --- |

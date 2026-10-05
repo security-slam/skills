@@ -17,6 +17,11 @@ Source: [securityslam.com/library/chronicler](https://securityslam.com/library/c
 - **Put docs where users look.** README.md, CONTRIBUTING.md, SECURITY.md, GOVERNANCE.md, MAINTAINERS.md, SUPPORT.md, or the project's docs site.
 - **Draft policies from the OSPS Templates, with attribution.** See [references/osps-templates.md](references/osps-templates.md). Fill every placeholder from the maintainer; never leave one in.
 - **Link every doc from the Security Insights file.** If the file does not exist, run the `cleaner` skill first.
+- **Start from a fresh scanner run.** Never infer a result the OSPS Baseline scanner reports. See [Scan First](#scan-first).
+
+## Scan First
+
+Before the audit, run the OSPS Baseline scanner at the confirmed level as [the scanner reference](../mechanizer/references/local-scan.md) describes. For every control in the table below that the scan reports as `Passed` or `Failed`, that result is the starting status, and its message says which document or Security Insights field it looked at. Audit by hand only the controls the scan left as `Needs Review` or `Not Run`, which is where the documentation judgement lives.
 
 ## Controls
 
