@@ -11,6 +11,7 @@ pvtr version
 pvtr install openssf/github-repo
 ```
 
+- `pvtr version` must report 0.23.0 or later. Older releases ignore the `targets:` key in step 2 and finish without writing any results. If the version is older, show the user the upgrade command (`brew upgrade privateerproj/tap/pvtr`, or the install script again) and run it once they agree.
 - If `pvtr` is missing, show the user the install command and run it once they agree: `brew install privateerproj/tap/pvtr`, or the install script in the [pvtr README](https://github.com/privateerproj/pvtr#readme), which puts the binary in `~/.privateer/bin`. Installing a CLI changes their machine, so ask first.
 - `pvtr install openssf/github-repo` installs the scanner plugin from grc.store, or updates it to the latest signed release, and verifies the signature before writing anything. Run it every time: it keeps the local scanner at the version the hub runs, and it is quick when nothing changed.
 - `gh` must be signed in (`gh auth status`) and `yq` must be on the `PATH`.
@@ -58,7 +59,7 @@ The target name (`skills`, `website`) names the results folder. Keep it to the r
 (cd "$dir" && pvtr run -c config.yml --silent)
 ```
 
-Run from inside the temporary directory: pvtr 0.23 writes `evaluation_results/` into the current directory and ignores `--write-directory` and `--output`. Exit code 1 means at least one target has a `Failed` result. That is an honest scan, not a broken run. A run that stops before any control is logged is a token or API problem: check `gh auth status` and run it once more.
+Run from inside the temporary directory: pvtr 0.23 writes `evaluation_results/` into the current directory and ignores `--write-directory` and `--output`. Exit code 1 means at least one target has a `Failed` result. That is an honest scan, not a broken run. A run that stops before any control is logged is a token or API problem: check `gh auth status` and run it once more. A run that leaves no `evaluation_results/` directory at all is an old `pvtr` that skipped the config: go back to step 1.
 
 ## 4. Read the results
 
