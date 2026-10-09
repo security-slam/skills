@@ -35,7 +35,9 @@ find . -maxdepth 2 -iname 'security-insights.y*ml' -not -path './node_modules/*'
 
 If one exists, read it and note its `header.schema-version`. A `schema-version` of `1.x.x` is the retired v1 format. Tell the user and migrate it to v2 in step 4.
 
-If none exists, create `security-insights.yml` at the repository root. That is the name and location the Slam instructions use. The upstream spec also accepts `.github/security-insights.yml`, and the `find` above matches other casings such as `SECURITY-INSIGHTS.yml`. Keep whatever name an existing file or the project's other tooling already uses.
+If none exists, create `security-insights.yml` at the repository root. That is the name and location the Slam instructions use. The upstream spec also accepts the `.github/` directory and the `.yaml` extension, and the `find` above matches other casings such as `SECURITY-INSIGHTS.yml`. Keep whatever name an existing file or the project's other tooling already uses.
+
+If the `find` returns two files in the same directory, such as `security-insights.yml` and `security-insights.yaml`, stop and ask the user which one to keep. The spec tells consumers to report an error instead of choosing one. Merge anything unique into the kept file and delete the other.
 
 ### 2. Gather evidence
 
