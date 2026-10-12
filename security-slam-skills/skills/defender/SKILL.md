@@ -110,7 +110,7 @@ For QA-06.03 and BR-07.02, draft from the Test Coverage and Secrets and Credenti
 
 ### 4. Drive the failed controls to zero
 
-Work with the user in priority order: Level 1 first, then settings changes (fast, high impact), then docs, then release pipeline work. Fix one, merge it, and let the next run confirm it. To check a fix before it lands and publishes, rerun the local scan from [Scan First](#scan-first), or run the OSPS Baseline Action on the pull request; never trigger the publish workflow from a pull request. Trigger it by hand with `gh workflow run` on the workflow file step 1 found when you do not want to wait, and respect the hub's ten-minute window per target.
+Work with the user in priority order: Level 1 first, then settings changes (fast, high impact), then docs, then release pipeline work. Fix one, merge it, then publish with `gh workflow run` to confirm it. To check a fix before it lands and publishes, rerun the local scan from [Scan First](#scan-first), or run the OSPS Baseline Action on the pull request; never trigger the publish workflow from a pull request. Run it on the workflow file step 1 found, and respect the hub's ten-minute window per target.
 
 Correct - a precise settings change shown for approval:
 

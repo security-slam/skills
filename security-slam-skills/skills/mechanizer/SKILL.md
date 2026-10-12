@@ -16,8 +16,8 @@ Source: [securityslam.com/library/mechanizer](https://securityslam.com/library/m
 
 - **Never weaken a check to reach green.** Fix the underlying control or leave it failing and explain why. A failing scan still earns Mechanizer; a passing one is the `defender` skill's job.
 - **Never change repository or org settings without explicit approval.** Branch protection, MFA enforcement, and default workflow permissions are outward-facing changes. Show the exact change and wait for a yes.
-- **Pin every action to a full commit SHA** with a version comment. Resolve SHAs from the GitHub API at generation time. Never guess or reuse a SHA from memory. **One exception:** call the publish workflow by tag, `publish.yml@v1`. The hub accepts a result only when the Sigstore certificate names that exact tag; a SHA-pinned call puts the SHA in the certificate and the hub's identity check fails. Say so in a comment on the `uses:` line and add `# zizmor: ignore[unpinned-uses]` so a linter does not "fix" it.
-- **Never trigger the publish workflow on pull requests.** Pushes to the default branch, releases, or a schedule only. The hub stores one log per target and catalog every ten minutes and rejects the rest with `rate_limited`.
+- **Pin every action to a full commit SHA** with a version comment. Resolve SHAs from the GitHub API at generation time. Never guess or reuse a SHA from memory. **One exception:** call the publish workflow by tag, `publish.yml@v1`. The hub accepts a result only when the Sigstore certificate names that exact tag; a SHA-pinned call puts the SHA in the certificate and the hub's identity check fails. Say so in a comment on the `uses:` line so a linter or reviewer does not "fix" it. When the repository has a zizmor config (`.github/zizmor.yml` or `zizmor.yml`), add the exception there as a scoped policy, `rules: unpinned-uses: config: policies: revanite-io/pvtr-publish-results/*: ref-pin`, with the reason as a comment, and leave the `uses:` line without an inline ignore. Otherwise keep the asset's `# zizmor: ignore[unpinned-uses]`.
+- **Never trigger the publish workflow on pull requests or pushes.** A schedule, manual dispatch, or releases only. The hub stores one log per target and catalog every ten minutes and rejects the rest with `rate_limited`, which fails the run, so merges that land minutes apart turn the default branch red.
 - **Never guess the grc.store namespace.** Ask for the slug and check it exists.
 - **Never perform grc.store setup.** Enterprise access, namespaces, and trusted-publisher bindings are created in the grc.store UI by an enterprise or namespace admin. Instruct, then ask the user to confirm. The hub cannot tell a user who their enterprise admins are, and neither can you.
 - **Keep scanner tokens away from untrusted code.** Never run a scan on `pull_request_target` or on fork PRs.
@@ -123,7 +123,7 @@ Create `.github/workflows/publish-results.yml` from [assets/publish-results.yml]
 
 - **The scanner token goes inline.** The plugin, published on the hub as `openssf/github-repo`, reads its token only from its config `vars`, so the config is passed through `secrets.config` with `${{ secrets.GITHUB_TOKEN }}` rather than a committed `.pvtr/config.yml`, which could not carry it. The job token is read-only and scoped to the repository. Settings it cannot read (org MFA, some admin settings) report "Needs Review"; that is expected and does not block the badge. This worked on [revanite-io/pvtr-aws-s3](https://github.com/revanite-io/pvtr-aws-s3/blob/main/.github/workflows/publish-results.yaml) on 2026-10-04. octo-sts support is tracked in revanite-io/pvtr-publish-results#10.
 - **`applicability` is the Baseline level the hub judges:** `maturity-1`, `maturity-2`, or `maturity-3`. Confirm it with the user; use `maturity-1` when unknown. The `defender` skill reads the published result at this level.
-- **Triggers:** push to the default branch, a weekly schedule, and manual dispatch in the asset. Every push is another run, which is what the Defender loop wants. A release trigger is also allowed, but a release usually follows a push inside the ten-minute window, so use one or the other.
+- **Triggers:** a weekly schedule and manual dispatch in the asset. The Defender loop publishes after each merged fix with `gh workflow run`, which keeps runs at least ten minutes apart. A release trigger is also allowed when releases are rare; drop it if releases often land within ten minutes of each other.
 - **Version:** the `version` job reads the latest release tag and falls back to `0.0.0` for a project with no releases.
 
 #### First run
@@ -140,7 +140,7 @@ The `publish` job's status reports publication, not the evaluation: a failing Ba
 | --- | --- | --- |
 | `forbidden`: bundle sync requires a write role or ownership of the target namespace | No trusted-publisher binding for this repository and ref, or the namespace does not exist | The namespace and binding rows above |
 | `target_not_owned` or `results_caller_mismatch` | The `target:` namespace is not one this repository is bound to, or the run came from a ref the binding excludes | Fix `target:`, or the binding's ref |
-| `rate_limited` | A second log for this target within ten minutes | Wait, and remove any pull-request trigger |
+| `rate_limited` | A second log for this target within ten minutes | Wait, and remove any push or pull-request trigger |
 | `results_signer_untrusted` | The workflow was called by SHA or by a tag the hub does not accept | Call `publish.yml@v1` |
 | The `run` job fails before publishing | The scanner aborted, usually a token or API problem | Read the run job log and re-run once |
 
@@ -150,7 +150,7 @@ Add a `repository.security.tools` entry for the scanner. The `cleaner` skill's [
 
 ### 7. Submission checklist
 
-- [ ] A workflow on the default branch runs the scan on push, release, or schedule
+- [ ] A workflow on the default branch runs the scan on a schedule (plus manual dispatch)
 - [ ] At least one completed run: a workflow run (Option 1) or a log on the grc.store target page (Option 2)
 - [ ] Actions pinned by SHA; the publish workflow called by tag (Option 2)
 - [ ] Security Insights lists the scanner with the right `location` and validates
