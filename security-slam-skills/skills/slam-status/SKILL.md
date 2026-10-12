@@ -51,7 +51,7 @@ Check each badge in this order. Record a status and the evidence (a path, URL, o
 | Inspector | Look for a Gemara threat catalog or a self-assessment document, and for `repository.security.assessments.self.evidence` in the Security Insights file. | An assessment document exists and the Security Insights file links it. |
 | Mechanizer | `grep -rl -e osps-baseline-action -e pvtr-publish-results .github/workflows`, then `gh run list --workflow FILENAME --branch DEFAULT_BRANCH --limit 1 --json conclusion,url` (the workflow's basename and the default branch from step 1) | A workflow on the default branch runs the scanner action or the grc.store publish workflow on push, release, or schedule. Report the latest run result if you can read it. A publish workflow with no successful run is `Partial`: the likely cause is a missing namespace or trusted-publisher binding on grc.store. |
 | Defender | Needs the publish workflow. Read its `target:` input as `NAMESPACE/TARGET@...`, then `curl -sf https://hub.grc.store/v1/targets/NAMESPACE/TARGET` and read `.versions[0].latest.result` with `jq`. The level checked is the workflow's `applicability` entry (`maturity-1`, `-2`, or `-3`). | The latest result is `Passed` at the project's level. If the user gave no level and the workflow scans `maturity-1`, report "Level 1 only checked". No publish workflow: `Not started`. A 404 from the hub: `Not started`, the first run has not published. Any other failure to read the target: `Unknown`. |
-| CRA Readiness | None. The badge details are not published yet. | Report `Not started` with the note "Details for this badge will be released on October 12, 2026." |
+| CRA Readiness | `grep -il "commercial products\|CRA stewardship" SECURITY.md`, then the Security Insights `project.vulnerability-reporting` block and `grep -l steward@linuxfoundation.org CONTRIBUTING.md`. Count org-default files. | Either SECURITY.md carries the one-sentence opt-out ("We do not anticipate this project being used in commercial products"), or all three of: SECURITY.md has the "CRA stewardship:" statement, `reports-accepted: true` with a `policy` or `contact`, and CONTRIBUTING.md names the steward address. One or two of the three is `Partial`. Non-LF stewards: `Unknown`, the `cra` skill asks. |
 
 Use these status values only:
 
@@ -76,7 +76,7 @@ Correct:
 | Inspector | Not started | No threat catalog or self-assessment found |
 | Mechanizer | Not started | No Baseline scan workflow |
 | Defender | Not started | No publish workflow, nothing on grc.store |
-| CRA Readiness | Not started | Details for this badge will be released on October 12, 2026 |
+| CRA Readiness | Not started | No opt-out sentence or stewardship statement in SECURITY.md |
 
 **Next: run the `cleaner` skill.** Every other badge links its evidence from the Security Insights file, so fix it first.
 ```
@@ -96,8 +96,7 @@ Recommend the first badge in this order that is not `Evidence found`:
 3. `inspector`: the self-assessment feeds Baseline controls SA-03.01 and SA-03.02.
 4. `mechanizer`: automated scans show what still fails.
 5. `defender`: the capstone. It needs the four badges above. If the Mechanizer evidence is the scanner action only, recommend `mechanizer` (Option 2, the publish workflow) instead, because Defender is judged from grc.store.
-
-Never recommend `cra` until its details are published on October 12, 2026. If the user asked about CRA readiness, tell them that date and recommend `chronicler`, which covers the documents CRA readiness builds on.
+6. `cra`: last. It adds to the SECURITY.md and Security Insights file the badges above produce, and most projects finish it with one sentence.
 
 If every badge shows `Evidence found`, tell the user to run each badge skill's submission checklist.
 

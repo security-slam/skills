@@ -111,7 +111,7 @@ Not sure where a project stands? Run `slam-status` first. Otherwise start with C
 | `inspector` | Complete a Gemara threat assessment or an OSPS self-assessment. |
 | `mechanizer` | Wire a live, recurring OSPS Baseline scan into the default branch, as the scanner action or the grc.store publish workflow, and record it in Security Insights. |
 | `defender` | Reach a passing OSPS Baseline result for the project's maturity level, published on grc.store, with Security Insights evidence for the controls the scanner cannot check. |
-| `cra` | Voluntary EU Cyber Resilience Act (CRA) readiness. Details for this badge will be released on October 12, 2026, and the skill says so until then. |
+| `cra` | Implement the project steward's EU Cyber Resilience Act (CRA) guidance: decide whether the CRA applies, then add the stewardship statement to SECURITY.md, record the reporting channel in Security Insights, and document steward escalation in CONTRIBUTING.md. |
 | `slam-status` | Check a repo against all six badges at once and recommend which one to work on next. Read-only. |
 
 Every skill begins with a local run of the OSPS Baseline scanner over each repository in the project, and infers only what the scanner cannot check. Your agent picks a skill when your request matches its description. You can also ask for one by name, for example "use the cleaner skill". In Claude Code, `/cleaner` works too.
