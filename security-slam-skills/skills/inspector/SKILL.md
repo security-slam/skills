@@ -10,7 +10,7 @@ The Inspector badge requires a structured security self-assessment. Two paths qu
 - **Option 1: Gemara threat assessment.** A machine-readable catalog of capabilities (what the project does) and threats (what could go wrong). Best for projects whose regulated users want machine-readable threat data.
 - **Option 2: OSPS Self Assessment.** A prose assessment following the [OpenSSF security-assessments](https://github.com/ossf/security-assessments) guidance. Broader in scope.
 
-Source: [securityslam.com/library/inspector](https://securityslam.com/library/inspector) and the [Threat Assessment Guide](https://securityslam.com/library/threat-assessment-guide), which targets Gemara v1.5.0.
+Source: [securityslam.com/library/inspector](https://securityslam.com/library/inspector) and the [Threat Assessment Guide](https://securityslam.com/library/threat-assessment-guide), which targets Gemara v1.6.0.
 
 ## Critical Rules
 
@@ -87,8 +87,8 @@ threats:
 Validate each file against a pinned Gemara release:
 
 ```bash
-cue vet -c -d '#CapabilityCatalog' github.com/gemaraproj/gemara@v1.5.0 capability-catalog.yaml
-cue vet -c -d '#ThreatCatalog' github.com/gemaraproj/gemara@v1.5.0 threat-catalog.yaml
+cue vet -c -d '#CapabilityCatalog' github.com/gemaraproj/gemara@v1.6.0 capability-catalog.yaml
+cue vet -c -d '#ThreatCatalog' github.com/gemaraproj/gemara@v1.6.0 threat-catalog.yaml
 ```
 
 Always pin the version and set `metadata.gemara-version` to match.
