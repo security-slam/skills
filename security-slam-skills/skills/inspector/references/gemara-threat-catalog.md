@@ -1,6 +1,6 @@
 # Gemara Threat Catalog
 
-Schema source: [gemaraproj/gemara v1.5.0](https://github.com/gemaraproj/gemara/tree/v1.5.0) (`capabilitycatalog.cue`, `threatcatalog.cue`, `collections.cue`, `metadata.cue`). Method source: the Security Slam [Threat Assessment Guide](https://securityslam.com/library/threat-assessment-guide) by Jennifer Power.
+Schema source: [gemaraproj/gemara v1.6.0](https://github.com/gemaraproj/gemara/tree/v1.6.0) (`capabilitycatalog.cue`, `threatcatalog.cue`, `collections.cue`, `metadata.cue`). Method source: the Security Slam [Threat Assessment Guide](https://securityslam.com/library/threat-assessment-guide) by Jennifer Power.
 
 ## The Idea
 
@@ -49,8 +49,8 @@ Group threats by a scheme the team understands. STRIDE (Spoofing, Tampering, Rep
 ### Step 3: Validate
 
 ```bash
-cue vet -c -d '#CapabilityCatalog' github.com/gemaraproj/gemara@v1.5.0 capability-catalog.yaml
-cue vet -c -d '#ThreatCatalog' github.com/gemaraproj/gemara@v1.5.0 threat-catalog.yaml
+cue vet -c -d '#CapabilityCatalog' github.com/gemaraproj/gemara@v1.6.0 capability-catalog.yaml
+cue vet -c -d '#ThreatCatalog' github.com/gemaraproj/gemara@v1.6.0 threat-catalog.yaml
 ```
 
 Silent output means valid. cue checks shape, unique IDs, and that each entry's `group` exists. It does not check that cross-catalog references resolve, so verify those by hand.

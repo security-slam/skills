@@ -124,7 +124,7 @@ The individual recognitions (Security Advocate, Security Champion, Advisor) go t
 | --- | --- |
 | OSPS Baseline | 2026-08-28 |
 | Security Insights schema | 2.2.0 |
-| Gemara schema | 1.5.0 |
+| Gemara schema | 1.6.0 |
 | grc.store publish workflow (`revanite-io/pvtr-publish-results`) | `v1` |
 | OSPS Baseline scanner plugin (`openssf/github-repo` on grc.store) | latest at run time; `0.31.0` tested |
 
