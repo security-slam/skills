@@ -52,4 +52,6 @@ jobs:
           title: "chore(deps): update pre-commit hook versions"
           body: "Automated weekly update of pre-commit hook versions via `pre-commit autoupdate --freeze`."
           branch: pre-commit-autoupdate
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          sign-commits: true
           labels: dependencies
