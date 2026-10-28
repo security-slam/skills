@@ -239,9 +239,9 @@ threats:
     description: |
       The pipeline runs third-party code with write tokens: the
       ospo-reusable-workflows release and auto-labeler workflows (contents:write
-      and pull-requests:write), kenyonj/mark-ready-when-ready (contents:write),
-      peter-evans/create-pull-request and revanite-io/osps-baseline-action
-      (octo-sts tokens), and step-security/harden-runner in every job. A
+      and pull-requests:write), peter-evans/create-pull-request and
+      revanite-io/osps-baseline-action (octo-sts tokens), and
+      step-security/harden-runner in every job. A
       malicious upstream commit reaches this repository when a Dependabot bump
       to its SHA merges. Dependabot groups minor and patch bumps, and main
       requires no review, so one writer can merge that bump. Repository
