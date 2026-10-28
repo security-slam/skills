@@ -176,12 +176,8 @@ capabilities:
   - id: SEC.SLAM.SKILLS.CI.CAP09
     title: Pull Request and Issue Housekeeping
     description: |
-      .github/workflows/mark-ready-when-ready.yaml marks a same-repository draft
-      PR ready for review once checks pass and the mark-ready-when-ready label is
-      present. It runs kenyonj/mark-ready-when-ready with contents:write and
-      pull-requests:write. .github/workflows/stale.yaml runs daily with
-      issues:write and pull-requests:write to label and close inactive issues
-      and PRs.
+      .github/workflows/stale.yaml runs daily with issues:write and
+      pull-requests:write to label and close inactive issues and PRs.
     group: automation
 
   - id: SEC.SLAM.SKILLS.CI.CAP10
